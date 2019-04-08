@@ -35,6 +35,7 @@ typedef struct TMainWindow {
     GtkWidget *window;
     TPalette *palette;
     TController *controller;
+    GtkWidget **menu_items;
 
 } TMainWindow ;
 

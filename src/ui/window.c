@@ -56,6 +56,7 @@ TMainWindow* New_TMainWindow(void)
     this->Start_View = TMainWindow_Start_View;
     this->Free = TMainWindow_New_Free;
     this->palette = New_TPalette();
+    this->menu_items = NULL;
     singleton_instance = this;
     return (this);
 }
@@ -81,6 +82,7 @@ static void activate(GtkApplication* app, gpointer user_data)
     GtkWidget *menu_item;
 
     GtkWidget *main_box;
+    int menu_item_idx = 0;
 
     singleton_instance->window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(singleton_instance->window), "Hexagones");
@@ -97,10 +99,13 @@ static void activate(GtkApplication* app, gpointer user_data)
     gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_root), menu);
 
     char **map_action = map_actions;
+    singleton_instance->menu_items = malloc(10 * sizeof(GtkWidget*));
     while (*map_action) {
         menu_item = gtk_menu_item_new_with_label(*map_action);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
         g_signal_connect(menu_item, "activate", G_CALLBACK(callback_menuitem), NULL);
+        singleton_instance->menu_items[menu_item_idx] = menu_item;
+        menu_item_idx++;
         map_action++;
     }
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_root);
@@ -114,6 +119,8 @@ static void activate(GtkApplication* app, gpointer user_data)
         menu_item = gtk_menu_item_new_with_label(*algo_action);
         gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
         g_signal_connect(menu_item, "activate", G_CALLBACK(callback_menuitem), NULL);
+        singleton_instance->menu_items[menu_item_idx] = menu_item;
+        menu_item_idx++;
         algo_action++;
     }
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_root);
@@ -134,15 +141,31 @@ static void activate(GtkApplication* app, gpointer user_data)
 
 static void callback_menuitem(GtkMenuItem *item, gpointer user_data)
 {
+    int i;
     //g_print("Item clicked: %s\n", gtk_menu_item_get_label(item));
+    for (i = 0; i < 10; i++) {
+        gtk_widget_set_sensitive(
+            singleton_instance->menu_items[i],
+            FALSE
+        );
+    }
     singleton_instance->controller->On_MenuChange(
         singleton_instance->controller,
         gtk_menu_item_get_label(item)
     );
+    for (i = 0; i < 10; i++) {
+        gtk_widget_set_sensitive(
+            singleton_instance->menu_items[i],
+            TRUE
+        );
+    }
     (void)user_data;
 }
 
 void TMainWindow_New_Free(TMainWindow *this)
 {
+    if (this) {
+        free(this->menu_items);
+    }
     free(this);
 }
