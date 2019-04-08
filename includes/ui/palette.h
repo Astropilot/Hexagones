@@ -12,37 +12,33 @@
 *******************************************************************************/
 
 /**
- * @file ui/window.h
- * @brief Header file of the Main Window class.
+ * @file ui/palette.h
+ * @brief Header file of the Palette class.
  */
 
-#ifndef UI_WINDOW_H_
-#define UI_WINDOW_H_
+#ifndef UI_PALETTE_H_
+#define UI_PALETTE_H_
 
 #include <gtk/gtk.h>
 
 #include "controller.h"
 
-typedef struct TPalette TPalette;
+typedef struct TPalette {
 
-typedef struct TMainWindow {
+    void(*Init_Palette)(struct TPalette*);
 
-    int(*Start_View)(struct TMainWindow*);
+    void(*Free)(struct TPalette*);          /*!< Free (ressources) method. */
 
-    void(*Free)(struct TMainWindow*);       /*!< Free (ressources) method. */
-
-    GtkApplication *app;
-    GtkWidget *window;
-    TPalette *palette;
+    GtkWidget *widget;
     TController *controller;
 
-} TMainWindow ;
+} TPalette ;
 
 
-TMainWindow* New_TMainWindow(void);
+TPalette* New_TPalette(void);
 
-int TMainWindow_Start_View(TMainWindow *this);
+void TPalette_Init_Palette(TPalette *this);
 
-void TMainWindow_New_Free(TMainWindow *this);
+void TPalette_New_Free(TPalette *this);
 
 #endif

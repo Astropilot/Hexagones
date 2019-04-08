@@ -25,6 +25,10 @@ typedef struct TMainWindow TMainWindow;
 
 typedef struct TController {
 
+    void(*On_MenuChange)(struct TController*, const char*);
+
+    void(*On_PaletteChange)(struct TController*, const char*);
+
     void(*Free)(struct TController*);       /*!< Free (ressources) method. */
 
     TMainWindow *view;
@@ -34,6 +38,10 @@ typedef struct TController {
 
 
 TController* New_TController(void);
+
+void TController_On_MenuChange(TController *this, const char *label);
+
+void TController_On_PaletteChange(TController *this, const char *label);
 
 void TController_New_Free(TController *this);
 

@@ -16,16 +16,25 @@
 
 #include "main.h"
 #include "ui/window.h"
+#include "controller.h"
 
 int main(void)
 {
+    TController *controller = New_TController();
     TMainWindow *window = New_TMainWindow();
+
     int status = EXIT_FAILURE;
 
-    if (window) {
+    if (window && controller) {
+        controller->view = window;
+        window->controller = controller;
         status = window->Start_View(window);
-        window->Free(window);
     }
+
+    if (window)
+        window->Free(window);
+    if (controller)
+        controller->Free(controller);
 
     return (status);
 }

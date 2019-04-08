@@ -16,13 +16,33 @@
 
 #include "main.h"
 #include "ui/window.h"
+#include "ui/palette.h"
+#include "controller.h"
 
 static TMainWindow *singleton_instance = NULL;
 
 static void activate(GtkApplication* app, gpointer user_data);
-static void all_white(void);
+static void callback_menuitem(GtkMenuItem *item, gpointer user_data);
 
-TMainWindow* New_TMainWindow()
+static char *map_actions[] = {
+    "All white",
+    "All black",
+    "Clear results",
+    "Random",
+    NULL
+};
+
+static char *algo_actions[] = {
+    "Depth-first Search",
+    "Breadth-first Search",
+    "Related components",
+    "Bellman-Ford",
+    "Dijkstra",
+    "A-star",
+    NULL
+};
+
+TMainWindow* New_TMainWindow(void)
 {
     TMainWindow *this = singleton_instance;
 
@@ -35,6 +55,7 @@ TMainWindow* New_TMainWindow()
 
     this->Start_View = TMainWindow_Start_View;
     this->Free = TMainWindow_New_Free;
+    this->palette = New_TPalette();
     singleton_instance = this;
     return (this);
 }
@@ -55,7 +76,11 @@ static void activate(GtkApplication* app, gpointer user_data)
 {
     GtkWidget *menubar;
     GtkWidget *app_box;
-    GtkWidget *menu_all_white;
+    GtkWidget *menu;
+    GtkWidget *menu_root;
+    GtkWidget *menu_item;
+
+    GtkWidget *main_box;
 
     singleton_instance->window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(singleton_instance->window), "Hexagones");
@@ -67,18 +92,54 @@ static void activate(GtkApplication* app, gpointer user_data)
     menubar = gtk_menu_bar_new();
     gtk_box_pack_start(GTK_BOX(app_box), menubar, FALSE, FALSE, 0);
 
-    menu_all_white = gtk_menu_item_new_with_label("Tout blanc");
-    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_all_white);
+    menu = gtk_menu_new();
+    menu_root = gtk_menu_item_new_with_label("Map");
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_root), menu);
 
-    g_signal_connect(menu_all_white, "activate", G_CALLBACK(all_white), NULL);
+    char **map_action = map_actions;
+    while (*map_action) {
+        menu_item = gtk_menu_item_new_with_label(*map_action);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+        g_signal_connect(menu_item, "activate", G_CALLBACK(callback_menuitem), NULL);
+        map_action++;
+    }
+    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_root);
+
+    menu = gtk_menu_new();
+    menu_root = gtk_menu_item_new_with_label("Algorithms");
+    gtk_menu_item_set_submenu(GTK_MENU_ITEM(menu_root), menu);
+
+    char **algo_action = algo_actions;
+    while (*algo_action) {
+        menu_item = gtk_menu_item_new_with_label(*algo_action);
+        gtk_menu_shell_append(GTK_MENU_SHELL(menu), menu_item);
+        g_signal_connect(menu_item, "activate", G_CALLBACK(callback_menuitem), NULL);
+        algo_action++;
+    }
+    gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_root);
+
+    main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_box_pack_start(GTK_BOX(app_box), main_box, FALSE, FALSE, 0);
+
+    singleton_instance->palette->controller = singleton_instance->controller;
+    singleton_instance->palette->Init_Palette(singleton_instance->palette);
+
+    gtk_box_pack_start(GTK_BOX(main_box),
+        singleton_instance->palette->widget, FALSE, FALSE, 0
+    );
 
     gtk_widget_show_all(singleton_instance->window);
     (void)user_data;
 }
 
-static void all_white()
+static void callback_menuitem(GtkMenuItem *item, gpointer user_data)
 {
-    g_print("All white\n");
+    //g_print("Item clicked: %s\n", gtk_menu_item_get_label(item));
+    singleton_instance->controller->On_MenuChange(
+        singleton_instance->controller,
+        gtk_menu_item_get_label(item)
+    );
+    (void)user_data;
 }
 
 void TMainWindow_New_Free(TMainWindow *this)
