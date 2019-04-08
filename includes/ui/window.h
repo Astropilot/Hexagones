@@ -24,6 +24,7 @@
 #include "controller.h"
 
 typedef struct TPalette TPalette;
+typedef struct TMap TMap;
 
 typedef struct TMainWindow {
 
@@ -34,6 +35,7 @@ typedef struct TMainWindow {
     GtkApplication *app;
     GtkWidget *window;
     TPalette *palette;
+    TMap *map;
     TController *controller;
     GtkWidget **menu_items;
 

@@ -75,8 +75,6 @@ void TPalette_Init_Palette(TPalette *this)
         g_signal_connect(GTK_TOGGLE_BUTTON(radio), "toggled", G_CALLBACK(callback_palettechoice), NULL);
         color++;
     }
-
-    (void)*this;
 }
 
 static void callback_palettechoice(GtkWidget *button, gpointer user_data)

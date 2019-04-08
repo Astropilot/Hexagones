@@ -17,6 +17,7 @@
 #include "main.h"
 #include "ui/window.h"
 #include "ui/palette.h"
+#include "ui/map.h"
 #include "controller.h"
 
 static TMainWindow *singleton_instance = NULL;
@@ -56,6 +57,7 @@ TMainWindow* New_TMainWindow(void)
     this->Start_View = TMainWindow_Start_View;
     this->Free = TMainWindow_New_Free;
     this->palette = New_TPalette();
+    this->map = New_TMap();
     this->menu_items = NULL;
     singleton_instance = this;
     return (this);
@@ -81,12 +83,12 @@ static void activate(GtkApplication* app, gpointer user_data)
     GtkWidget *menu_root;
     GtkWidget *menu_item;
 
-    GtkWidget *main_box;
+    GtkWidget *main_grid;
     int menu_item_idx = 0;
 
     singleton_instance->window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(singleton_instance->window), "Hexagones");
-    gtk_window_set_default_size(GTK_WINDOW(singleton_instance->window), WIN_WIDTH, WIN_HEIGHT);
+    //gtk_window_set_default_size(GTK_WINDOW(singleton_instance->window), WIN_WIDTH, WIN_HEIGHT);
 
     app_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(singleton_instance->window), app_box);
@@ -125,14 +127,24 @@ static void activate(GtkApplication* app, gpointer user_data)
     }
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_root);
 
-    main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start(GTK_BOX(app_box), main_box, FALSE, FALSE, 0);
+    //main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    //gtk_box_pack_start(GTK_BOX(app_box), main_box, FALSE, FALSE, 0);
+
+    main_grid = gtk_grid_new();
+    gtk_box_pack_start(GTK_BOX(app_box), main_grid, FALSE, FALSE, 0);
 
     singleton_instance->palette->controller = singleton_instance->controller;
     singleton_instance->palette->Init_Palette(singleton_instance->palette);
 
-    gtk_box_pack_start(GTK_BOX(main_box),
-        singleton_instance->palette->widget, FALSE, FALSE, 0
+    gtk_grid_attach(GTK_GRID(main_grid),
+        singleton_instance->palette->widget, 0, 0, 1, 1
+    );
+
+    singleton_instance->map->controller = singleton_instance->controller;
+    singleton_instance->map->Init_Map(singleton_instance->map);
+
+    gtk_grid_attach(GTK_GRID(main_grid),
+        singleton_instance->map->widget, 1, 0, 1, 1
     );
 
     gtk_widget_show_all(singleton_instance->window);
@@ -166,6 +178,8 @@ void TMainWindow_New_Free(TMainWindow *this)
 {
     if (this) {
         free(this->menu_items);
+        this->palette->Free(this->palette);
+        this->map->Free(this->map);
     }
     free(this);
 }

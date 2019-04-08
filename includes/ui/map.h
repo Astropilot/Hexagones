@@ -12,21 +12,33 @@
 *******************************************************************************/
 
 /**
- * @file main.h
- * @brief The globals Hexagones constants.
- *
- * This file define some globals constants.
- *
+ * @file ui/map.h
+ * @brief Header file of the Map class.
  */
 
-#ifndef MAIN_H_
-#define MAIN_H_
+#ifndef UI_MAP_H_
+#define UI_MAP_H_
 
-#define MAP_WIDTHX 45            /*!< The map width.*/
-#define MAP_HEIGHTY 20           /*!< The map height.*/
-#define MAP_HEX_UNIT 8          /*!< The unit of a hexagone.*/
+#include <gtk/gtk.h>
 
-#define MAP_HEIGHT (4*MAP_HEX_UNIT+1)*(MAP_HEIGHTY+0.5)
-#define MAP_WIDTH  (3*MAP_HEX_UNIT+1)*(MAP_WIDTHX+0.5)
+#include "controller.h"
+
+typedef struct TMap {
+
+    void(*Init_Map)(struct TMap*);
+
+    void(*Free)(struct TMap*);          /*!< Free (ressources) method. */
+
+    GtkWidget *widget;
+    TController *controller;
+
+} TMap ;
+
+
+TMap* New_TMap(void);
+
+void TMap_Init_Map(TMap *this);
+
+void TMap_New_Free(TMap *this);
 
 #endif
