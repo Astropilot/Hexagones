@@ -15,6 +15,7 @@
 #include <stdlib.h>
 
 #include "main.h"
+#include "model/grid.h"
 #include "ui/window.h"
 #include "ui/palette.h"
 #include "ui/map.h"
@@ -23,7 +24,7 @@
 static TMainWindow *singleton_instance = NULL;
 
 static void activate(GtkApplication* app, gpointer user_data);
-static void callback_menuitem(GtkMenuItem *item, gpointer user_data);
+static gboolean callback_menuitem(GtkMenuItem *item, gpointer user_data);
 
 static char *map_actions[] = {
     "All white",
@@ -88,7 +89,6 @@ static void activate(GtkApplication* app, gpointer user_data)
 
     singleton_instance->window = gtk_application_window_new(app);
     gtk_window_set_title(GTK_WINDOW(singleton_instance->window), "Hexagones");
-    //gtk_window_set_default_size(GTK_WINDOW(singleton_instance->window), WIN_WIDTH, WIN_HEIGHT);
 
     app_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
     gtk_container_add(GTK_CONTAINER(singleton_instance->window), app_box);
@@ -127,9 +127,6 @@ static void activate(GtkApplication* app, gpointer user_data)
     }
     gtk_menu_shell_append(GTK_MENU_SHELL(menubar), menu_root);
 
-    //main_box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    //gtk_box_pack_start(GTK_BOX(app_box), main_box, FALSE, FALSE, 0);
-
     main_grid = gtk_grid_new();
     gtk_box_pack_start(GTK_BOX(app_box), main_grid, FALSE, FALSE, 0);
 
@@ -148,13 +145,16 @@ static void activate(GtkApplication* app, gpointer user_data)
     );
 
     gtk_widget_show_all(singleton_instance->window);
+
+    TGridModel *model = New_TGridModel(singleton_instance->controller);
+    singleton_instance->controller->model = model;
     (void)user_data;
 }
 
-static void callback_menuitem(GtkMenuItem *item, gpointer user_data)
+static gboolean callback_menuitem(GtkMenuItem *item, gpointer user_data)
 {
     int i;
-    //g_print("Item clicked: %s\n", gtk_menu_item_get_label(item));
+
     for (i = 0; i < 10; i++) {
         gtk_widget_set_sensitive(
             singleton_instance->menu_items[i],
@@ -172,6 +172,7 @@ static void callback_menuitem(GtkMenuItem *item, gpointer user_data)
         );
     }
     (void)user_data;
+    return (FALSE);
 }
 
 void TMainWindow_New_Free(TMainWindow *this)
@@ -182,4 +183,5 @@ void TMainWindow_New_Free(TMainWindow *this)
         this->map->Free(this->map);
     }
     free(this);
+    singleton_instance = NULL;
 }

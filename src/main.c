@@ -26,8 +26,8 @@ int main(void)
     int status = EXIT_FAILURE;
 
     if (window && controller) {
-        controller->view = window;
         window->controller = controller;
+        controller->view = window;
         status = window->Start_View(window);
     }
 
@@ -35,6 +35,8 @@ int main(void)
         window->Free(window);
     if (controller)
         controller->Free(controller);
+    //if (model)
+    //    model->Free(model);
 
     return (status);
 }

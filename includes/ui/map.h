@@ -27,9 +27,14 @@ typedef struct TMap {
 
     void(*Init_Map)(struct TMap*);
 
+    void(*Draw_Hexagone)(struct TMap*, int, int, color_name_t);
+
+    void(*Reset_Map)(struct TMap*, color_name_t);
+
     void(*Free)(struct TMap*);          /*!< Free (ressources) method. */
 
     GtkWidget *widget;
+    cairo_surface_t *surface;
     TController *controller;
 
 } TMap ;
@@ -38,6 +43,10 @@ typedef struct TMap {
 TMap* New_TMap(void);
 
 void TMap_Init_Map(TMap *this);
+
+void TMap_Draw_Hexagone(TMap *this, int x, int y, color_name_t color);
+
+void TMap_Reset_Map(TMap *this, color_name_t color);
 
 void TMap_New_Free(TMap *this);
 

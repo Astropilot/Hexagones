@@ -22,6 +22,7 @@ TARGET	= hexagones
 RM		= rm -f
 
 SRC		= \
+		$(wildcard src/model/*.c) \
 		$(wildcard src/ui/*.c) \
 		$(wildcard src/*.c)
 
@@ -30,7 +31,7 @@ OBJ		= $(SRC:.c=.o)
 all: $(TARGET)
 
 $(TARGET): $(OBJ)
-	$(CC) $(OBJ) -o $(TARGET) $(LIBS)
+	$(CC) $(OBJ) -o $(TARGET) $(LIBS) -lm
 
 .PHONY: clean fclean re
 

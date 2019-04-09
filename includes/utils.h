@@ -12,21 +12,20 @@
 *******************************************************************************/
 
 /**
- * @file main.h
- * @brief The globals Hexagones constants.
- *
- * This file define some globals constants.
- *
+ * @file utils.h
  */
 
-#ifndef MAIN_H_
-#define MAIN_H_
+#ifndef UTILS_H_
+#define UTILS_H_
 
-#define MAP_WIDTHX 45           /*!< The map width.*/
-#define MAP_HEIGHTY 20          /*!< The map height.*/
-#define MAP_HEX_UNIT 8          /*!< The unit of a hexagone.*/
-
-#define MAP_HEIGHT (4*MAP_HEX_UNIT+1)*(MAP_HEIGHTY+0.5)
-#define MAP_WIDTH  (3*MAP_HEX_UNIT+1)*(MAP_WIDTHX+0.5)
+/**
+ * @fn int rand_range_int(int min, int max)
+ * @brief Return a random integer between a min and a max given.
+ *
+ * @param min The minimum value.
+ * @param max The maximum value.
+ * @return A random integer.
+ */
+int rand_range_int(int min, int max);
 
 #endif

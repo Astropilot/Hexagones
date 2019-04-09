@@ -20,16 +20,16 @@
 
 static TPalette *singleton_instance = NULL;
 
-static void callback_palettechoice(GtkWidget *button, gpointer user_data);
+static gboolean callback_palettechoice(GtkWidget *button, gpointer user_data);
 
-static char *colors[] = {
+static char *hex_types[] = {
     "Black",
     "White",
     "Blue",
     "Green",
     "Yellow",
-    "Depart",
-    "Objectif",
+    "Start",
+    "Goal",
     NULL
 };
 
@@ -54,30 +54,30 @@ void TPalette_Init_Palette(TPalette *this)
 {
     GtkWidget *radio_owner;
     GtkWidget *radio;
-    char **color = colors;
+    char **hex_type = hex_types;
 
     this->widget = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
 
-    radio_owner = gtk_radio_button_new_with_label(NULL, *color);
-    color++;
+    radio_owner = gtk_radio_button_new_with_label(NULL, *hex_type);
+    hex_type++;
     g_signal_connect(GTK_TOGGLE_BUTTON(radio_owner), "toggled", G_CALLBACK(callback_palettechoice), NULL);
 
     gtk_box_pack_start(GTK_BOX(this->widget),
         radio_owner, FALSE, FALSE, 0
     );
 
-    while (*color) {
-        radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_owner), *color);
+    while (*hex_type) {
+        radio = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(radio_owner), *hex_type);
 
         gtk_box_pack_start(GTK_BOX(this->widget),
             radio, FALSE, FALSE, 0
         );
         g_signal_connect(GTK_TOGGLE_BUTTON(radio), "toggled", G_CALLBACK(callback_palettechoice), NULL);
-        color++;
+        hex_type++;
     }
 }
 
-static void callback_palettechoice(GtkWidget *button, gpointer user_data)
+static gboolean callback_palettechoice(GtkWidget *button, gpointer user_data)
 {
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button))) {
         singleton_instance->controller->On_PaletteChange(
@@ -86,9 +86,11 @@ static void callback_palettechoice(GtkWidget *button, gpointer user_data)
         );
     }
     (void)user_data;
+    return (FALSE);
 }
 
 void TPalette_New_Free(TPalette *this)
 {
     free(this);
+    singleton_instance = NULL;
 }

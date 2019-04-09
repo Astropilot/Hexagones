@@ -22,6 +22,8 @@
 #include <gtk/gtk.h>
 
 typedef struct TMainWindow TMainWindow;
+typedef struct TGridModel TGridModel;
+typedef enum color_name_t color_name_t;
 
 typedef struct TController {
 
@@ -29,10 +31,15 @@ typedef struct TController {
 
     void(*On_PaletteChange)(struct TController*, const char*);
 
+    void(*On_LeftClick)(struct TController*, int, int);
+
+    void(*Update_Color)(struct TController*, int, int, color_name_t);
+
     void(*Free)(struct TController*);       /*!< Free (ressources) method. */
 
     TMainWindow *view;
-    //TModel *model;
+    TGridModel *model;
+    char *hex_choice;
 
 } TController ;
 
@@ -42,6 +49,10 @@ TController* New_TController(void);
 void TController_On_MenuChange(TController *this, const char *label);
 
 void TController_On_PaletteChange(TController *this, const char *label);
+
+void TController_On_LeftClick(TController *this, int x, int y);
+
+void TController_Update_Color(TController *this, int x, int y, color_name_t color);
 
 void TController_New_Free(TController *this);
 
