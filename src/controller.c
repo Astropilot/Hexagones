@@ -17,6 +17,7 @@
 
 #include "main.h"
 #include "controller.h"
+#include "utils.h"
 #include "model/grid.h"
 #include "model/hex.h"
 #include "ui/window.h"
@@ -39,8 +40,7 @@ TController* New_TController(void)
     this->On_MenuChange = TController_On_MenuChange;
     this->On_PaletteChange = TController_On_PaletteChange;
     this->On_LeftClick = TController_On_LeftClick;
-    this->Update_Color = TController_Update_Color;
-    this->Add_Arrow = TController_Add_Arrow;
+    this->Update_Hex = TController_Update_Hex;
     this->Free = TController_New_Free;
     this->hex_choice = strdup("Black");
     singleton_instance = this;
@@ -49,6 +49,8 @@ TController* New_TController(void)
 
 void TController_On_MenuChange(TController *this, const char *label)
 {
+    static arrow_id_t id_arrow = {0, NULL, NULL, BLACK, 0, 0};
+
     if (!this || !label) return;
 
     printf("[Controller] Menu item selected: %s\n", label);
@@ -61,8 +63,27 @@ void TController_On_MenuChange(TController *this, const char *label)
         this->view->map->Reset_Map(this->view->map, BLACK);
         this->model->Reset_Model(this->model, BLACK);
     }
+    if (strcmp(label, "Clear results") == 0) {
+        this->model->Reset_Results(this->model);
+    }
     if (strcmp(label, "Random") == 0) {
         this->model->Random(this->model);
+    }
+    if (strcmp(label, "Depth-first Search") == 0) {
+        id_arrow = this->model->Add_Arrow(this->model,
+            this->model->start,
+            this->model->hexs[0][MAP_HEIGHTY-2],
+            BLUE
+        );
+        this->model->Add_Arrow(this->model,
+            this->model->start,
+            this->model->hexs[1][MAP_HEIGHTY-2],
+            BLUE
+        );
+    }
+    if (strcmp(label, "Breadth-first Search") == 0) {
+        if (id_arrow.is_arrow != 0)
+            this->model->Remove_Arrow(this->model, id_arrow);
     }
     (void)*this;
 }
@@ -103,15 +124,10 @@ void TController_On_LeftClick(TController *this, int x, int y)
     }
 }
 
-void TController_Update_Color(TController *this, int x, int y, color_name_t color)
+void TController_Update_Hex(TController *this, THex *hex)
 {
     (void)colors;
-    this->view->map->Draw_Hexagone(this->view->map, x, y, color);
-}
-
-void TController_Add_Arrow(TController *this, int x1, int y1, int x2, int y2, color_name_t color)
-{
-    this->view->map->Add_Arrow(this->view->map, x1, y1, x2, y2, color);
+    this->view->map->Update_Hex(this->view->map, hex);
 }
 
 void TController_New_Free(TController *this)

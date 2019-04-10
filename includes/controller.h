@@ -21,9 +21,11 @@
 
 #include <gtk/gtk.h>
 
+#include "utils.h"
+
 typedef struct TMainWindow TMainWindow;
 typedef struct TGridModel TGridModel;
-typedef enum color_name_t color_name_t;
+typedef struct THex THex;
 
 typedef struct TController {
 
@@ -33,9 +35,7 @@ typedef struct TController {
 
     void(*On_LeftClick)(struct TController*, int, int);
 
-    void(*Update_Color)(struct TController*, int, int, color_name_t);
-
-    void(*Add_Arrow)(struct TController*, int, int, int, int, color_name_t);
+    void(*Update_Hex)(struct TController*, THex*);
 
     void(*Free)(struct TController*);       /*!< Free (ressources) method. */
 
@@ -54,9 +54,7 @@ void TController_On_PaletteChange(TController *this, const char *label);
 
 void TController_On_LeftClick(TController *this, int x, int y);
 
-void TController_Update_Color(TController *this, int x, int y, color_name_t color);
-
-void TController_Add_Arrow(TController *this, int x1, int y1, int x2, int y2, color_name_t color);
+void TController_Update_Hex(TController *this, THex *hex);
 
 void TController_New_Free(TController *this);
 

@@ -24,5 +24,6 @@ int rand_range_int(int min, int max)
         srand((unsigned int)time(NULL));
         rand_init = 1;
     }
+    (void)colors;
     return ( rand() % (max + 1 - min) ) + min;
 }

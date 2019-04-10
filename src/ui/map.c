@@ -19,9 +19,10 @@
 #include "main.h"
 #include "ui/map.h"
 #include "ui/color.h"
+#include "model/hex.h"
 #include "controller.h"
+#include "utils.h"
 
-#define M_PI 3.14159265358979323846
 
 static TMap *singleton_instance = NULL;
 
@@ -37,8 +38,7 @@ TMap* New_TMap(void)
     if(!this) return (NULL);
 
     this->Init_Map = TMap_Init_Map;
-    this->Draw_Hexagone = TMap_Draw_Hexagone;
-    this->Add_Arrow = TMap_Add_Arrow;
+    this->Update_Hex = TMap_Update_Hex;
     this->Reset_Map = TMap_Reset_Map;
     this->Free = TMap_New_Free;
     this->surface = NULL;
@@ -50,22 +50,22 @@ TMap* New_TMap(void)
 
 static void find_closest_hex(gdouble x, gdouble y, int *i, int *j)
 {
-    int ii, jj;
-
-    int rx = (int)round(x);
-    int ry = (int)round(y);
-
+    int cur_i, cur_j;
     int imin, jmin = -1;
     double min = 99999999;
-    for(ii = 0; ii < MAP_WIDTHX; ii++) {
-        for (jj = 0; jj < MAP_HEIGHTY; jj++) {
-            int xx = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*ii;
-            int yy = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*jj +(2*MAP_HEX_UNIT)*(ii%2);
-            double distance = sqrt(pow(xx - rx, 2) + pow(yy - ry, 2));
+    int p_x = (int)round(x);
+    int p_y = (int)round(y);
+
+    for(cur_i = 0; cur_i < MAP_WIDTHX; cur_i++) {
+        for (cur_j = 0; cur_j < MAP_HEIGHTY; cur_j++) {
+            int v_x = (2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * cur_i) - p_x;
+            int v_y = (2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * cur_j + (2 * MAP_HEX_UNIT) * (cur_i % 2)) - p_y;
+            double distance = sqrt((v_x * v_x) + (v_y * v_y));
+
             if (distance < (MAP_HEX_UNIT*2) && distance < min) {
                 min = distance;
-                imin = ii;
-                jmin = jj;
+                imin = cur_i;
+                jmin = cur_j;
             }
         }
     }
@@ -77,22 +77,21 @@ static void draw_hexagone(GtkWidget *widget, int i, int j, rgb_color_t bg_color,
 {
     cairo_t *cr;
     rgb_color_t fg_color = colors[BLACK];
-    int x = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*i;
-    int y = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*j +(2*MAP_HEX_UNIT)*(i%2);
+    int x = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * i;
+    int y = 2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * j + (2 * MAP_HEX_UNIT) * (i % 2);
 
     cr = cairo_create(singleton_instance->surface);
 
-    // Draw hexagone here.
     cairo_set_source_rgb(cr, fg_color.r, fg_color.g, fg_color.b);
     cairo_set_line_width(cr, 1);
 
-    cairo_line_to(cr, x+2*MAP_HEX_UNIT, y);
-    cairo_line_to(cr, x+MAP_HEX_UNIT, y+2*MAP_HEX_UNIT);
-    cairo_line_to(cr, x- MAP_HEX_UNIT, y+2*MAP_HEX_UNIT);
-    cairo_line_to(cr, x-2*MAP_HEX_UNIT, y);
-    cairo_line_to(cr, x-MAP_HEX_UNIT, y-2*MAP_HEX_UNIT);
-    cairo_line_to(cr, x+MAP_HEX_UNIT, y-2*MAP_HEX_UNIT);
-    cairo_line_to(cr, x+2*MAP_HEX_UNIT, y);
+    cairo_line_to(cr, x + 2 * MAP_HEX_UNIT, y);
+    cairo_line_to(cr, x + MAP_HEX_UNIT, y + 2 * MAP_HEX_UNIT);
+    cairo_line_to(cr, x - MAP_HEX_UNIT, y + 2 * MAP_HEX_UNIT);
+    cairo_line_to(cr, x - 2 * MAP_HEX_UNIT, y);
+    cairo_line_to(cr, x - MAP_HEX_UNIT, y - 2 * MAP_HEX_UNIT);
+    cairo_line_to(cr, x + MAP_HEX_UNIT, y - 2 * MAP_HEX_UNIT);
+    cairo_line_to(cr, x + 2 * MAP_HEX_UNIT, y);
 
     cairo_close_path(cr);
     cairo_stroke_preserve(cr);
@@ -103,21 +102,19 @@ static void draw_hexagone(GtkWidget *widget, int i, int j, rgb_color_t bg_color,
 
     if (redraw)
         gtk_widget_queue_draw_area(widget,
-            x-2*MAP_HEX_UNIT, y-2*MAP_HEX_UNIT,
-            (x+2*MAP_HEX_UNIT) - (x-2*MAP_HEX_UNIT), (y+2*MAP_HEX_UNIT) - (y-2*MAP_HEX_UNIT)
+            x - 2 * MAP_HEX_UNIT, y - 2 * MAP_HEX_UNIT,
+            (x + 2 * MAP_HEX_UNIT) - (x - 2 * MAP_HEX_UNIT), (y + 2 * MAP_HEX_UNIT) - (y - 2 * MAP_HEX_UNIT)
         );
 }
 
 static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_color_t color, unsigned int redraw)
 {
     cairo_t *cr;
-    int x1 = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*i1;
-    int y1 = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*j1 +(2*MAP_HEX_UNIT)*(i1%2);
-    int x2 = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*i2;
-    int y2 = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*j2 +(2*MAP_HEX_UNIT)*(i2%2);
-
+    int x1 = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * i1;
+    int y1 = 2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * j1 + (2 * MAP_HEX_UNIT) * (i1 % 2);
+    int x2 = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * i2;
+    int y2 = 2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * j2 + (2 * MAP_HEX_UNIT) * (i2 % 2);
     double angle = atan2(y2 - y1, x2 - x1) + M_PI;
-
     double arr_x1 = x2 + 10 * cos(angle - 0.4);
     double arr_y1 = y2 + 10 * sin(angle - 0.4);
     double arr_x2 = x2 + 10 * cos(angle + 0.4);
@@ -127,7 +124,6 @@ static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_co
 
     cr = cairo_create(singleton_instance->surface);
 
-    // Draw arrow here.
     cairo_set_line_width(cr, 4);
 
     cairo_move_to(cr, x1, y1);
@@ -142,7 +138,6 @@ static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_co
     cairo_move_to(cr, x2, y2);
     cairo_line_to(cr, arr_x1, arr_y1);
     cairo_line_to(cr, arr_x2, arr_y2);
-
     cairo_close_path(cr);
     cairo_set_source_rgb(cr, color.r, color.g, color.b);
     cairo_stroke_preserve(cr);
@@ -159,12 +154,11 @@ static void draw_text(GtkWidget *widget, int i, int j, const char *text, unsigne
 {
     cairo_t *cr;
     rgb_color_t text_color = colors[BLACK];
-    int x = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*i - MAP_HEX_UNIT;
-    int y = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*j +(2*MAP_HEX_UNIT)*(i%2);
+    int x = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * i - MAP_HEX_UNIT;
+    int y = 2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * j + (2 * MAP_HEX_UNIT) * (i % 2);
 
     cr = cairo_create(singleton_instance->surface);
 
-    // Draw text here.
     cairo_set_source_rgb(cr, text_color.r, text_color.g, text_color.b);
     cairo_set_font_size(cr, 11);
     cairo_move_to(cr, x, y);
@@ -175,8 +169,8 @@ static void draw_text(GtkWidget *widget, int i, int j, const char *text, unsigne
     x += MAP_HEX_UNIT;
     if (redraw)
         gtk_widget_queue_draw_area(widget,
-            x-2*MAP_HEX_UNIT, y-2*MAP_HEX_UNIT,
-            (x+2*MAP_HEX_UNIT) - (x-2*MAP_HEX_UNIT), (y+2*MAP_HEX_UNIT) - (y-2*MAP_HEX_UNIT)
+            x - 2 * MAP_HEX_UNIT, y - 2 * MAP_HEX_UNIT,
+            (x + 2 * MAP_HEX_UNIT) - (x - 2 * MAP_HEX_UNIT), (y + 2 * MAP_HEX_UNIT) - (y - 2 * MAP_HEX_UNIT)
         );
 }
 
@@ -287,14 +281,23 @@ void TMap_Init_Map(TMap *this)
     );
 }
 
-void TMap_Draw_Hexagone(TMap *this, int x, int y, color_name_t color)
+void TMap_Update_Hex(TMap *this, THex *hex)
 {
-    draw_hexagone(this->widget, x, y, colors[color], 1);
-}
+    int i;
 
-void TMap_Add_Arrow(TMap *this, int x1, int y1, int x2, int y2, color_name_t color)
-{
-    draw_arrow(this->widget, x1, y1, x2, y2, colors[color], 1);
+    draw_hexagone(this->widget, hex->x, hex->y, colors[hex->color], 1);
+    for (i = 0; i < 6; i++) {
+        if (hex->arrows[i].is_arrow) {
+            draw_arrow(this->widget,
+                hex->arrows[i].hex_src->x, hex->arrows[i].hex_src->y,
+                hex->arrows[i].hex_dst->x, hex->arrows[i].hex_dst->y,
+                colors[hex->arrows[i].arrow_color],
+                1
+            );
+        }
+    }
+    if (0)
+        draw_text(this->widget, 0, 0, "42", 1);
 }
 
 void TMap_Reset_Map(TMap *this, color_name_t color)

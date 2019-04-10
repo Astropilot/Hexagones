@@ -21,6 +21,7 @@
 
 #include <gtk/gtk.h>
 
+#include "utils.h"
 #include "ui/color.h"
 
 typedef struct TController TController;
@@ -34,6 +35,8 @@ typedef struct THex {
     int x;
     int y;
     color_name_t color;
+    arrow_id_t *arrows;
+    //text_id_t label;
     TController *observator;
 
 } THex ;
@@ -43,25 +46,5 @@ THex *New_THex(int x, int y, TController *observator);
 void THex_Change_Color(THex *this, color_name_t color, unsigned int notify);
 
 void THex_New_Free(THex *this);
-
-typedef struct TGraphModel {
-
-    int(*Heuristic)(struct TGraphModel*, THex*, THex*);
-
-    void(*Reset_Model)(struct TGraphModel*, color_name_t color);
-
-    void(*Free)(struct TGraphModel*);       /*!< Free (ressources) method. */
-
-    TController *observator;
-    THex **hexs;
-    THex *start;
-    THex *goal;
-
-} TGraphModel ;
-
-
-TGraphModel *New_TGraphModel(void);
-
-void TGraphModel_New_Free(TGraphModel *this);
 
 #endif

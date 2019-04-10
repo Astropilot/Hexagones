@@ -16,11 +16,13 @@
 
 #include "model/hex.h"
 #include "controller.h"
+#include "utils.h"
 #include "ui/color.h"
 
 THex *New_THex(int x, int y, TController *observator)
 {
     THex *this = malloc(sizeof(THex));
+    int i;
 
     if(!this) return (NULL);
 
@@ -30,6 +32,10 @@ THex *New_THex(int x, int y, TController *observator)
     this->y = y;
     this->observator = observator;
     this->color = WHITE;
+    this->arrows = malloc(6 * sizeof(arrow_id_t));
+    for (i = 0; i < 6; i++)
+        this->arrows[i].is_arrow = 0;
+    //this->label.text = NULL;
     return (this);
 }
 
@@ -39,11 +45,14 @@ void THex_Change_Color(THex *this, color_name_t color, unsigned int notify)
 
     this->color = color;
     if (notify)
-        this->observator->Update_Color(this->observator, this->x, this->y, color);
+        this->observator->Update_Hex(this->observator, this);
     (void)colors;
 }
 
 void THex_New_Free(THex *this)
 {
+    if (this) {
+        free(this->arrows);
+    }
     free(this);
 }
