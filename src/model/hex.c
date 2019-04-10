@@ -35,7 +35,7 @@ THex *New_THex(int x, int y, TController *observator)
     this->arrows = malloc(6 * sizeof(arrow_id_t));
     for (i = 0; i < 6; i++)
         this->arrows[i].is_arrow = 0;
-    //this->label.text = NULL;
+    this->label.text = NULL;
     return (this);
 }
 
@@ -53,6 +53,7 @@ void THex_New_Free(THex *this)
 {
     if (this) {
         free(this->arrows);
+        free(this->label.text);
     }
     free(this);
 }

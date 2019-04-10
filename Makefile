@@ -22,6 +22,8 @@ TARGET	= hexagones
 RM		= rm -f
 
 SRC		= \
+		$(wildcard src/struct/*.c) \
+		$(wildcard src/pathfinding/*.c) \
 		$(wildcard src/model/*.c) \
 		$(wildcard src/ui/*.c) \
 		$(wildcard src/*.c)

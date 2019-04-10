@@ -24,6 +24,8 @@
 #include "ui/map.h"
 #include "ui/color.h"
 
+#include "pathfinding/breadth_search.h"
+
 static TController *singleton_instance = NULL;
 
 TController* New_TController(void)
@@ -49,8 +51,6 @@ TController* New_TController(void)
 
 void TController_On_MenuChange(TController *this, const char *label)
 {
-    static arrow_id_t id_arrow = {0, NULL, NULL, BLACK, 0, 0};
-
     if (!this || !label) return;
 
     printf("[Controller] Menu item selected: %s\n", label);
@@ -69,21 +69,8 @@ void TController_On_MenuChange(TController *this, const char *label)
     if (strcmp(label, "Random") == 0) {
         this->model->Random(this->model);
     }
-    if (strcmp(label, "Depth-first Search") == 0) {
-        id_arrow = this->model->Add_Arrow(this->model,
-            this->model->start,
-            this->model->hexs[0][MAP_HEIGHTY-2],
-            BLUE
-        );
-        this->model->Add_Arrow(this->model,
-            this->model->start,
-            this->model->hexs[1][MAP_HEIGHTY-2],
-            BLUE
-        );
-    }
     if (strcmp(label, "Breadth-first Search") == 0) {
-        if (id_arrow.is_arrow != 0)
-            this->model->Remove_Arrow(this->model, id_arrow);
+        breadth_search(this->model);
     }
     (void)*this;
 }

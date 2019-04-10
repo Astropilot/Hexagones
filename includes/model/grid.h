@@ -37,11 +37,15 @@ typedef struct TGridModel {
 
     int(*Empty_Distance)(struct TGridModel*, THex*, THex*);
 
+    THex**(*Get_Neighbors)(struct TGridModel*, THex*, unsigned int);
+
     arrow_id_t(*Add_Arrow)(struct TGridModel*, THex*, THex*, color_name_t);
 
     void(*Remove_Arrow)(struct TGridModel*, arrow_id_t);
 
-    //text_id_t(*Add_Text)(struct TGridModel*, THex*, const char*);
+    text_id_t(*Add_Text)(struct TGridModel*, THex*, const char*);
+
+    void(*Remove_Text)(struct TGridModel*, text_id_t);
 
     void(*Reset_Model)(struct TGridModel*, color_name_t);
 
@@ -67,11 +71,15 @@ void TGridModel_Random(TGridModel *this);
 
 int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2);
 
+THex **TGridModel_Get_Neighbors(TGridModel *this, THex *hex, unsigned int all);
+
 arrow_id_t TGridModel_Add_Arrow(TGridModel *this, THex *hex1, THex *hex2, color_name_t color);
 
 void TGridModel_Remove_Arrow(TGridModel *this, arrow_id_t arrow);
 
-//text_id_t TGridModel_Add_Text(TGridModel *this, THex *hex, const char *text);
+text_id_t TGridModel_Add_Text(TGridModel *this, THex *hex, const char *text);
+
+void TGridModel_Remove_Text(TGridModel *this, text_id_t text);
 
 void TGridModel_Reset_Model(TGridModel *this, color_name_t color);
 

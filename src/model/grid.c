@@ -13,6 +13,7 @@
 
 #include <gtk/gtk.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "main.h"
 #include "controller.h"
@@ -40,9 +41,11 @@ TGridModel *New_TGridModel(TController *observator)
     this->Change_Goal = TGridModel_Change_Goal;
     this->Random = TGridModel_Random;
     this->Empty_Distance = TGridModel_Empty_Distance;
+    this->Get_Neighbors = TGridModel_Get_Neighbors;
     this->Add_Arrow = TGridModel_Add_Arrow;
     this->Remove_Arrow = TGridModel_Remove_Arrow;
-    //this->Add_Text = TGridModel_Add_Text;
+    this->Add_Text = TGridModel_Add_Text;
+    this->Remove_Text = TGridModel_Remove_Text;
     this->Reset_Model = TGridModel_Reset_Model;
     this->Reset_Results = TGridModel_Reset_Results;
     this->Free = TGridModel_New_Free;
@@ -108,6 +111,36 @@ int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2)
     return (0);
 }
 
+THex **TGridModel_Get_Neighbors(TGridModel *this, THex *hex, unsigned int all)
+{
+    THex **neighbors = malloc(6 * sizeof(THex*));
+    int count = 0;
+    int xv, yv;
+    int i;
+    int_pair_t coords[6] = {
+        {-1, -1 + hex->x % 2},
+        {-1, 0 + hex->x % 2},
+        {1, -1 + hex->x % 2},
+        {1, 0 + hex->x % 2},
+        {0, -1},
+        {0, 1}
+    };
+
+    for(i = 0; i < 6; i++)
+        neighbors[i] = NULL;
+    for(i = 0; i < 6; i++) {
+        xv = hex->x + coords[i].p1;
+        yv = hex->y + coords[i].p2;
+        if (xv >= 0 && xv < MAP_WIDTHX && yv >= 0 && yv < MAP_HEIGHTY) {
+            if (all || this->hexs[xv][yv]->color != BLACK) {
+                neighbors[count] = this->hexs[xv][yv];
+                count++;
+            }
+        }
+    }
+    return (neighbors);
+}
+
 arrow_id_t TGridModel_Add_Arrow(TGridModel *this, THex *hex1, THex *hex2, color_name_t color)
 {
     unsigned int uid = 0;
@@ -154,7 +187,6 @@ arrow_id_t TGridModel_Add_Arrow(TGridModel *this, THex *hex1, THex *hex2, color_
     hex2->arrows[uid2].uid_dst = uid2;
 
     this->observator->Update_Hex(this->observator, hex1);
-    this->observator->Update_Hex(this->observator, hex2);
     return (hex1->arrows[uid]);
 }
 
@@ -171,17 +203,29 @@ void TGridModel_Remove_Arrow(TGridModel *this, arrow_id_t arrow)
     hex_dst->arrows[arrow.uid_dst].hex_src = NULL;
     hex_dst->arrows[arrow.uid_dst].hex_dst = NULL;
 
-    this->observator->Update_Hex(this->observator, hex_src);
     this->observator->Update_Hex(this->observator, hex_dst);
+    this->observator->Update_Hex(this->observator, hex_src);
 }
 
-/*text_id_t TGridModel_Add_Text(TGridModel *this, THex *hex, const char *text)
+text_id_t TGridModel_Add_Text(TGridModel *this, THex *hex, const char *text)
 {
-    text_id_t text_id = {hex->x, hex->y, hex->color};
+    free(hex->label.text);
+    hex->label.text = strdup(text);
+    hex->label.hex = hex;
 
-    this->observator->Add_Text(this->observator, hex->x, hex->y, text);
-    return (text_id);
-}*/
+    this->observator->Update_Hex(this->observator, hex);
+    return (hex->label);
+}
+
+void TGridModel_Remove_Text(TGridModel *this, text_id_t text)
+{
+    THex *hex = text.hex;
+
+    free(hex->label.text);
+    hex->label.text = NULL;
+
+    this->observator->Update_Hex(this->observator, hex);
+}
 
 void TGridModel_Reset_Model(TGridModel *this, color_name_t color)
 {
@@ -207,8 +251,10 @@ void TGridModel_Reset_Results(TGridModel *this)
                 this->hexs[x][y]->arrows[i].is_arrow = 0;
                 this->hexs[x][y]->arrows[i].hex_src = NULL;
                 this->hexs[x][y]->arrows[i].hex_dst = NULL;
-                this->observator->Update_Hex(this->observator, this->hexs[x][y]);
             }
+            free(this->hexs[x][y]->label.text);
+            this->hexs[x][y]->label.text = NULL;
+            this->observator->Update_Hex(this->observator, this->hexs[x][y]);
         }
     }
 }

@@ -24,6 +24,11 @@
 
 typedef struct THex THex;
 
+typedef struct int_pair_t {
+    int p1;
+    int p2;
+} int_pair_t ;
+
 typedef struct arrow_id_t {
     unsigned int is_arrow;
     THex *hex_src;
@@ -33,11 +38,10 @@ typedef struct arrow_id_t {
     unsigned int uid_dst;
 } arrow_id_t;
 
-/*typedef struct text_id_t {
+typedef struct text_id_t {
     char *text;
     THex *hex;
-    color_name_t text_color;
-} text_id_t;*/
+} text_id_t;
 
 /**
  * @fn int rand_range_int(int min, int max)

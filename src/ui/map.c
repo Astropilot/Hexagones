@@ -146,8 +146,16 @@ static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_co
 
     cairo_destroy(cr);
 
-    if (redraw)
-        gtk_widget_queue_draw(widget);
+    if (redraw) {
+        gtk_widget_queue_draw_area(widget,
+            x1 - 2 * MAP_HEX_UNIT, y1 - 2 * MAP_HEX_UNIT,
+            (x1 + 2 * MAP_HEX_UNIT) - (x1 - 2 * MAP_HEX_UNIT), (y1 + 2 * MAP_HEX_UNIT) - (y1 - 2 * MAP_HEX_UNIT)
+        );
+        gtk_widget_queue_draw_area(widget,
+            x2 - 2 * MAP_HEX_UNIT, y2 - 2 * MAP_HEX_UNIT,
+            (x2 + 2 * MAP_HEX_UNIT) - (x2 - 2 * MAP_HEX_UNIT), (y2 + 2 * MAP_HEX_UNIT) - (y2 - 2 * MAP_HEX_UNIT)
+        );
+    }
 }
 
 static void draw_text(GtkWidget *widget, int i, int j, const char *text, unsigned int redraw)
@@ -296,8 +304,8 @@ void TMap_Update_Hex(TMap *this, THex *hex)
             );
         }
     }
-    if (0)
-        draw_text(this->widget, 0, 0, "42", 1);
+    if (hex->label.text)
+        draw_text(this->widget, hex->x, hex->y, hex->label.text, 1);
 }
 
 void TMap_Reset_Map(TMap *this, color_name_t color)

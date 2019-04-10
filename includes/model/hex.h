@@ -36,7 +36,7 @@ typedef struct THex {
     int y;
     color_name_t color;
     arrow_id_t *arrows;
-    //text_id_t label;
+    text_id_t label;
     TController *observator;
 
 } THex ;
