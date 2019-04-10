@@ -35,6 +35,8 @@ typedef struct TController {
 
     void(*Update_Color)(struct TController*, int, int, color_name_t);
 
+    void(*Add_Arrow)(struct TController*, int, int, int, int, color_name_t);
+
     void(*Free)(struct TController*);       /*!< Free (ressources) method. */
 
     TMainWindow *view;
@@ -53,6 +55,8 @@ void TController_On_PaletteChange(TController *this, const char *label);
 void TController_On_LeftClick(TController *this, int x, int y);
 
 void TController_Update_Color(TController *this, int x, int y, color_name_t color);
+
+void TController_Add_Arrow(TController *this, int x1, int y1, int x2, int y2, color_name_t color);
 
 void TController_New_Free(TController *this);
 

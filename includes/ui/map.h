@@ -29,6 +29,8 @@ typedef struct TMap {
 
     void(*Draw_Hexagone)(struct TMap*, int, int, color_name_t);
 
+    void(*Add_Arrow)(struct TMap*, int, int, int, int, color_name_t);
+
     void(*Reset_Map)(struct TMap*, color_name_t);
 
     void(*Free)(struct TMap*);          /*!< Free (ressources) method. */
@@ -45,6 +47,8 @@ TMap* New_TMap(void);
 void TMap_Init_Map(TMap *this);
 
 void TMap_Draw_Hexagone(TMap *this, int x, int y, color_name_t color);
+
+void TMap_Add_Arrow(TMap *this, int x1, int y1, int x2, int y2, color_name_t color);
 
 void TMap_Reset_Map(TMap *this, color_name_t color);
 

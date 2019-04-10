@@ -21,6 +21,8 @@
 #include "ui/color.h"
 #include "controller.h"
 
+#define M_PI 3.14159265358979323846
+
 static TMap *singleton_instance = NULL;
 
 TMap* New_TMap(void)
@@ -36,6 +38,7 @@ TMap* New_TMap(void)
 
     this->Init_Map = TMap_Init_Map;
     this->Draw_Hexagone = TMap_Draw_Hexagone;
+    this->Add_Arrow = TMap_Add_Arrow;
     this->Reset_Map = TMap_Reset_Map;
     this->Free = TMap_New_Free;
     this->surface = NULL;
@@ -105,6 +108,78 @@ static void draw_hexagone(GtkWidget *widget, int i, int j, rgb_color_t bg_color,
         );
 }
 
+static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_color_t color, unsigned int redraw)
+{
+    cairo_t *cr;
+    int x1 = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*i1;
+    int y1 = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*j1 +(2*MAP_HEX_UNIT)*(i1%2);
+    int x2 = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*i2;
+    int y2 = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*j2 +(2*MAP_HEX_UNIT)*(i2%2);
+
+    double angle = atan2(y2 - y1, x2 - x1) + M_PI;
+
+    double arr_x1 = x2 + 10 * cos(angle - 0.4);
+    double arr_y1 = y2 + 10 * sin(angle - 0.4);
+    double arr_x2 = x2 + 10 * cos(angle + 0.4);
+    double arr_y2 = y2 + 10 * sin(angle + 0.4);
+    double arr_x3 = x2 + 10 * cos(angle);
+    double arr_y3 = y2 + 10 * sin(angle);
+
+    cr = cairo_create(singleton_instance->surface);
+
+    // Draw arrow here.
+    cairo_set_line_width(cr, 4);
+
+    cairo_move_to(cr, x1, y1);
+    cairo_line_to(cr, arr_x3, arr_y3);
+    cairo_close_path(cr);
+    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_stroke_preserve(cr);
+    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_fill(cr);
+
+    cairo_set_line_width(cr, 1);
+    cairo_move_to(cr, x2, y2);
+    cairo_line_to(cr, arr_x1, arr_y1);
+    cairo_line_to(cr, arr_x2, arr_y2);
+
+    cairo_close_path(cr);
+    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_stroke_preserve(cr);
+    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_fill(cr);
+
+    cairo_destroy(cr);
+
+    if (redraw)
+        gtk_widget_queue_draw(widget);
+}
+
+static void draw_text(GtkWidget *widget, int i, int j, const char *text, unsigned int redraw)
+{
+    cairo_t *cr;
+    rgb_color_t text_color = colors[BLACK];
+    int x = 2*MAP_HEX_UNIT+ (3*MAP_HEX_UNIT+1)*i - MAP_HEX_UNIT;
+    int y = 2*MAP_HEX_UNIT +(4*MAP_HEX_UNIT+1)*j +(2*MAP_HEX_UNIT)*(i%2);
+
+    cr = cairo_create(singleton_instance->surface);
+
+    // Draw text here.
+    cairo_set_source_rgb(cr, text_color.r, text_color.g, text_color.b);
+    cairo_set_font_size(cr, 11);
+    cairo_move_to(cr, x, y);
+    cairo_show_text(cr, text);
+
+    cairo_destroy(cr);
+
+    x += MAP_HEX_UNIT;
+    if (redraw)
+        gtk_widget_queue_draw_area(widget,
+            x-2*MAP_HEX_UNIT, y-2*MAP_HEX_UNIT,
+            (x+2*MAP_HEX_UNIT) - (x-2*MAP_HEX_UNIT), (y+2*MAP_HEX_UNIT) - (y-2*MAP_HEX_UNIT)
+        );
+}
+
 static gboolean draw_callback(GtkWidget *widget, cairo_t *cr, gpointer data)
 {
     cairo_set_source_surface(cr, singleton_instance->surface, 0, 0);
@@ -141,8 +216,6 @@ static gboolean config_event_callback(GtkWidget *widget, GdkEventConfigure *even
             draw_hexagone(widget, i, j, colors[WHITE], 0);
         }
     }
-    //draw_hexagone(widget, 0, MAP_HEIGHTY-1, colors[MAGENTA], 0);
-    //draw_hexagone(widget, MAP_WIDTHX-1, 0, colors[RED], 0);
 
     (void)*event;
     (void)data;
@@ -156,10 +229,8 @@ static gboolean press_callback(GtkWidget *widget, GdkEventButton *event, gpointe
     if (event->button == GDK_BUTTON_PRIMARY) {
         int i, j;
 
-        printf("[LClick] x = %lf | y = %lf\n", event->x, event->y);
         find_closest_hex(event->x, event->y, &i, &j);
         if (i != -1 && j != -1) {
-            //draw_hexagone(widget, i, j, colors[YELLOW], 1);
             singleton_instance->controller->On_LeftClick(
                 singleton_instance->controller, i, j
             );
@@ -178,10 +249,8 @@ static gboolean motion_callback(GtkWidget *widget, GdkEventMotion *event, gpoint
     if (event->state & GDK_BUTTON1_MASK) {
         int i, j;
 
-        printf("[LClickMotion] x = %lf | y = %lf\n", event->x, event->y);
         find_closest_hex(event->x, event->y, &i, &j);
         if (i != -1 && j != -1) {
-            //draw_hexagone(widget, i, j, colors[YELLOW], 1);
             singleton_instance->controller->On_LeftClick(
                 singleton_instance->controller, i, j
             );
@@ -221,6 +290,11 @@ void TMap_Init_Map(TMap *this)
 void TMap_Draw_Hexagone(TMap *this, int x, int y, color_name_t color)
 {
     draw_hexagone(this->widget, x, y, colors[color], 1);
+}
+
+void TMap_Add_Arrow(TMap *this, int x1, int y1, int x2, int y2, color_name_t color)
+{
+    draw_arrow(this->widget, x1, y1, x2, y2, colors[color], 1);
 }
 
 void TMap_Reset_Map(TMap *this, color_name_t color)

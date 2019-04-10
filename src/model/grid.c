@@ -39,7 +39,8 @@ TGridModel *New_TGridModel(TController *observator)
     this->Change_Start = TGridModel_Change_Start;
     this->Change_Goal = TGridModel_Change_Goal;
     this->Random = TGridModel_Random;
-    this->Heuristic = TGridModel_Heuristic;
+    this->Empty_Distance = TGridModel_Empty_Distance;
+    this->Add_Arrow = TGridModel_Add_Arrow;
     this->Reset_Model = TGridModel_Reset_Model;
     this->Free = TGridModel_New_Free;
     this->observator = observator;
@@ -63,6 +64,35 @@ static void TGridModel_Init(TGridModel *this)
     this->start->Change_Color(this->start, MAGENTA, 1);
     this->goal = this->hexs[MAP_WIDTHX-1][0];
     this->goal->Change_Color(this->goal, RED, 1);
+
+    this->Add_Arrow(this, this->start, this->hexs[0][MAP_HEIGHTY-2], BLUE);
+    this->Add_Arrow(this, this->start, this->hexs[1][MAP_HEIGHTY-1], BLUE);
+    this->Add_Arrow(this, this->start, this->hexs[1][MAP_HEIGHTY-2], BLUE);
+
+    this->Add_Arrow(this, this->goal, this->hexs[MAP_WIDTHX-1][1], BLUE);
+    this->Add_Arrow(this, this->goal, this->hexs[MAP_WIDTHX-2][0], BLUE);
+
+    this->Add_Arrow(this, this->hexs[0][0], this->hexs[0][1], BLUE);
+    this->Add_Arrow(this, this->hexs[0][0], this->hexs[1][0], BLUE);
+
+    this->Add_Arrow(
+        this,
+        this->hexs[MAP_WIDTHX-1][MAP_HEIGHTY-1],
+        this->hexs[MAP_WIDTHX-2][MAP_HEIGHTY-2],
+        BLUE
+    );
+    this->Add_Arrow(
+        this,
+        this->hexs[MAP_WIDTHX-1][MAP_HEIGHTY-1],
+        this->hexs[MAP_WIDTHX-1][MAP_HEIGHTY-2],
+        BLUE
+    );
+    this->Add_Arrow(
+        this,
+        this->hexs[MAP_WIDTHX-1][MAP_HEIGHTY-1],
+        this->hexs[MAP_WIDTHX-2][MAP_HEIGHTY-1],
+        BLUE
+    );
     (void)colors;
 }
 
@@ -96,12 +126,19 @@ void TGridModel_Random(TGridModel *this)
     }
 }
 
-int TGridModel_Heuristic(TGridModel *this, THex *hex1, THex *hex2)
+int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2)
 {
     (void)*this;
     (void)*hex1;
     (void)*hex2;
     return (0);
+}
+
+void TGridModel_Add_Arrow(TGridModel *this, THex *hex1, THex *hex2, color_name_t color)
+{
+    this->observator->Add_Arrow(
+        this->observator, hex1->x, hex1->y, hex2->x, hex2->y, color
+    );
 }
 
 void TGridModel_Reset_Model(TGridModel *this, color_name_t color)

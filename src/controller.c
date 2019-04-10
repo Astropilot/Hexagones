@@ -40,6 +40,7 @@ TController* New_TController(void)
     this->On_PaletteChange = TController_On_PaletteChange;
     this->On_LeftClick = TController_On_LeftClick;
     this->Update_Color = TController_Update_Color;
+    this->Add_Arrow = TController_Add_Arrow;
     this->Free = TController_New_Free;
     this->hex_choice = strdup("Black");
     singleton_instance = this;
@@ -106,6 +107,11 @@ void TController_Update_Color(TController *this, int x, int y, color_name_t colo
 {
     (void)colors;
     this->view->map->Draw_Hexagone(this->view->map, x, y, color);
+}
+
+void TController_Add_Arrow(TController *this, int x1, int y1, int x2, int y2, color_name_t color)
+{
+    this->view->map->Add_Arrow(this->view->map, x1, y1, x2, y2, color);
 }
 
 void TController_New_Free(TController *this)

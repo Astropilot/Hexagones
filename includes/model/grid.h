@@ -33,7 +33,9 @@ typedef struct TGridModel {
 
     void(*Random)(struct TGridModel*);
 
-    int(*Heuristic)(struct TGridModel*, THex*, THex*);
+    int(*Empty_Distance)(struct TGridModel*, THex*, THex*);
+
+    void(*Add_Arrow)(struct TGridModel*, THex*, THex*, color_name_t);
 
     void(*Reset_Model)(struct TGridModel*, color_name_t);
 
@@ -55,7 +57,9 @@ void TGridModel_Change_Goal(TGridModel *this, int x, int y);
 
 void TGridModel_Random(TGridModel *this);
 
-int TGridModel_Heuristic(TGridModel *this, THex *hex1, THex *hex2);
+int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2);
+
+void TGridModel_Add_Arrow(TGridModel *this, THex *hex1, THex *hex2, color_name_t color);
 
 void TGridModel_Reset_Model(TGridModel *this, color_name_t color);
 
