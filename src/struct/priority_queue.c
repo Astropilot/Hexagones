@@ -68,10 +68,12 @@ unsigned int push_priority_queue(priority_queue_t *pqueue, void *data)
 
 unsigned int decrease_priority_queue(priority_queue_t *pqueue, void *data)
 {
-    if (!pqueue || !data || pqueue->size == 0) return (0);
+    if (!pqueue || !data || pqueue->size < 2) return (0);
 
     priority_queue_node_t *current = pqueue->head;
     priority_queue_node_t *previous = NULL;
+
+    if (pqueue->head->data == data) return (0);
 
     while (current && current->data != data)
         current = current->next;
@@ -87,12 +89,12 @@ unsigned int decrease_priority_queue(priority_queue_t *pqueue, void *data)
     if (current->prev)
         current->prev->next = current->next;
     current->next = NULL;
-    current->prev = NULL;
 
     current->prev = previous;
     if (previous) {
         current->next = previous->next;
-        current->next->prev = current;
+        if (current->next)
+            current->next->prev = current;
         previous->next = current;
     } else {
         pqueue->head->prev = current;
