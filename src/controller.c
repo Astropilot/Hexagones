@@ -25,6 +25,8 @@
 #include "ui/color.h"
 
 #include "pathfinding/breadth_search.h"
+#include "pathfinding/depth_search.h"
+#include "pathfinding/connected_components.h"
 
 static TController *singleton_instance = NULL;
 
@@ -69,8 +71,14 @@ void TController_On_MenuChange(TController *this, const char *label)
     if (strcmp(label, "Random") == 0) {
         this->model->Random(this->model);
     }
+    if (strcmp(label, "Depth-first Search") == 0) {
+        depth_search(this->model);
+    }
     if (strcmp(label, "Breadth-first Search") == 0) {
         breadth_search(this->model);
+    }
+    if (strcmp(label, "Connected components") == 0) {
+        connected_components(this->model);
     }
     (void)*this;
 }

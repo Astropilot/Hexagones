@@ -37,7 +37,7 @@ static char *map_actions[] = {
 static char *algo_actions[] = {
     "Depth-first Search",
     "Breadth-first Search",
-    "Related components",
+    "Connected components",
     "Bellman-Ford",
     "Dijkstra",
     "A-star",

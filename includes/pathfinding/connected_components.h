@@ -12,15 +12,15 @@
 *******************************************************************************/
 
 /**
- * @file pathfinding/depth_search.h
+ * @file pathfinding/connected_components.h
  * @brief The A* algorithm.
  */
 
-#ifndef PATHFINDING_DEPTH_SEARCH_H_
-#define PATHFINDING_DEPTH_SEARCH_H_
+#ifndef PATHFINDING_CONNECTED_COMPONENTS_H_
+#define PATHFINDING_CONNECTED_COMPONENTS_H_
 
 typedef struct TGridModel TGridModel;
 
-void depth_search(TGridModel *model);
+void connected_components(TGridModel *model);
 
 #endif
