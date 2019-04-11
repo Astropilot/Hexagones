@@ -54,7 +54,7 @@ void breadth_search(TGridModel *model)
                 distance[neighbor->x][neighbor->y] = distance[current->x][current->y] + 1;
                 predecessor[neighbor->x][neighbor->y] = current;
 
-                model->Add_Arrow(model, current, neighbor, BLUE);
+                model->Add_Arrow(model, current, neighbor, GRAY);
                 sprintf(str_distance, "%d", distance[neighbor->x][neighbor->y]);
                 model->Add_Text(model, neighbor, str_distance);
             }

@@ -26,23 +26,26 @@ typedef enum color_name_t {
     RED,
     GREEN,
     YELLOW,
-    MAGENTA
+    MAGENTA,
+    GRAY
 } color_name_t ;
 
-typedef struct rgb_color_t {
+typedef struct rgba_color_t {
     double r;
     double g;
     double b;
-} rgb_color_t ;
+    double a;
+} rgba_color_t ;
 
-static rgb_color_t colors[] = {
-    [WHITE] = {1.0, 1.0, 1.0},
-    [BLACK] = {0.0, 0.0, 0.0},
-    [BLUE] = {0.0, 0.0, 1.0},
-    [RED] = {1.0, 0.0, 0.0},
-    [GREEN] = {0.0, 1.0, 0.0},
-    [YELLOW] = {1.0, 1.0, 0.0},
-    [MAGENTA] = {1.0, 0.0, 1.0}
+static rgba_color_t colors[] = {
+    [WHITE] = {1.0, 1.0, 1.0, 1.0},
+    [BLACK] = {0.0, 0.0, 0.0, 1.0},
+    [BLUE] = {0.0, 0.0, 1.0, 1.0},
+    [RED] = {1.0, 0.0, 0.0, 1.0},
+    [GREEN] = {0.0, 1.0, 0.0, 1.0},
+    [YELLOW] = {1.0, 1.0, 0.0, 1.0},
+    [MAGENTA] = {1.0, 0.0, 1.0, 1.0},
+    [GRAY] = {0.5, 0.5, 0.5, 0.5}
 };
 
 #endif

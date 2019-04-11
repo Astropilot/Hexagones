@@ -19,6 +19,7 @@
 #include "main.h"
 #include "ui/map.h"
 #include "ui/color.h"
+#include "model/grid.h"
 #include "model/hex.h"
 #include "controller.h"
 #include "utils.h"
@@ -73,16 +74,16 @@ static void find_closest_hex(gdouble x, gdouble y, int *i, int *j)
     *j = jmin;
 }
 
-static void draw_hexagone(GtkWidget *widget, int i, int j, rgb_color_t bg_color, unsigned int redraw)
+static void draw_hexagone(GtkWidget *widget, int i, int j, rgba_color_t bg_color, unsigned int redraw)
 {
     cairo_t *cr;
-    rgb_color_t fg_color = colors[BLACK];
+    rgba_color_t fg_color = colors[BLACK];
     int x = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * i;
     int y = 2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * j + (2 * MAP_HEX_UNIT) * (i % 2);
 
     cr = cairo_create(singleton_instance->surface);
 
-    cairo_set_source_rgb(cr, fg_color.r, fg_color.g, fg_color.b);
+    cairo_set_source_rgba(cr, fg_color.r, fg_color.g, fg_color.b, fg_color.a);
     cairo_set_line_width(cr, 1);
 
     cairo_line_to(cr, x + 2 * MAP_HEX_UNIT, y);
@@ -95,7 +96,7 @@ static void draw_hexagone(GtkWidget *widget, int i, int j, rgb_color_t bg_color,
 
     cairo_close_path(cr);
     cairo_stroke_preserve(cr);
-    cairo_set_source_rgb(cr, bg_color.r, bg_color.g, bg_color.b);
+    cairo_set_source_rgba(cr, bg_color.r, bg_color.g, bg_color.b, bg_color.a);
     cairo_fill(cr);
 
     cairo_destroy(cr);
@@ -107,7 +108,7 @@ static void draw_hexagone(GtkWidget *widget, int i, int j, rgb_color_t bg_color,
         );
 }
 
-static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_color_t color, unsigned int redraw)
+static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgba_color_t color, unsigned int redraw)
 {
     cairo_t *cr;
     int x1 = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * i1;
@@ -129,9 +130,9 @@ static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_co
     cairo_move_to(cr, x1, y1);
     cairo_line_to(cr, arr_x3, arr_y3);
     cairo_close_path(cr);
-    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_set_source_rgba(cr, color.r, color.g, color.b, color.a);
     cairo_stroke_preserve(cr);
-    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_set_source_rgba(cr, color.r, color.g, color.b, color.a);
     cairo_fill(cr);
 
     cairo_set_line_width(cr, 1);
@@ -139,9 +140,9 @@ static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_co
     cairo_line_to(cr, arr_x1, arr_y1);
     cairo_line_to(cr, arr_x2, arr_y2);
     cairo_close_path(cr);
-    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_set_source_rgba(cr, color.r, color.g, color.b, color.a);
     cairo_stroke_preserve(cr);
-    cairo_set_source_rgb(cr, color.r, color.g, color.b);
+    cairo_set_source_rgba(cr, color.r, color.g, color.b, color.a);
     cairo_fill(cr);
 
     cairo_destroy(cr);
@@ -161,13 +162,13 @@ static void draw_arrow(GtkWidget *widget, int i1, int j1, int i2, int j2, rgb_co
 static void draw_text(GtkWidget *widget, int i, int j, const char *text, unsigned int redraw)
 {
     cairo_t *cr;
-    rgb_color_t text_color = colors[BLACK];
+    rgba_color_t text_color = colors[BLACK];
     int x = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * i - MAP_HEX_UNIT;
     int y = 2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * j + (2 * MAP_HEX_UNIT) * (i % 2);
 
     cr = cairo_create(singleton_instance->surface);
 
-    cairo_set_source_rgb(cr, text_color.r, text_color.g, text_color.b);
+    cairo_set_source_rgba(cr, text_color.r, text_color.g, text_color.b, text_color.a);
     cairo_set_font_size(cr, 11);
     cairo_move_to(cr, x, y);
     cairo_show_text(cr, text);
@@ -195,7 +196,7 @@ static gboolean draw_callback(GtkWidget *widget, cairo_t *cr, gpointer data)
 static gboolean config_event_callback(GtkWidget *widget, GdkEventConfigure *event, gpointer data)
 {
     cairo_t *cr;
-    rgb_color_t bg_color = colors[BLACK];
+    rgba_color_t bg_color = colors[BLACK];
     int i, j;
 
     if (singleton_instance->surface)
@@ -209,7 +210,7 @@ static gboolean config_event_callback(GtkWidget *widget, GdkEventConfigure *even
     );
 
     cr = cairo_create(singleton_instance->surface);
-    cairo_set_source_rgb(cr, bg_color.r, bg_color.g, bg_color.b);
+    cairo_set_source_rgba(cr, bg_color.r, bg_color.g, bg_color.b, bg_color.a);
     cairo_paint(cr);
     cairo_destroy(cr);
 
@@ -292,20 +293,26 @@ void TMap_Init_Map(TMap *this)
 void TMap_Update_Hex(TMap *this, THex *hex)
 {
     int i;
+    int x = 2 * MAP_HEX_UNIT + (3 * MAP_HEX_UNIT + 1) * hex->x;
+    int y = 2 * MAP_HEX_UNIT + (4 * MAP_HEX_UNIT + 1) * hex->y + (2 * MAP_HEX_UNIT) * (hex->x % 2);
 
-    draw_hexagone(this->widget, hex->x, hex->y, colors[hex->color], 1);
+    draw_hexagone(this->widget, hex->x, hex->y, colors[hex->color], 0);
     for (i = 0; i < 6; i++) {
         if (hex->arrows[i].is_arrow) {
             draw_arrow(this->widget,
                 hex->arrows[i].hex_src->x, hex->arrows[i].hex_src->y,
                 hex->arrows[i].hex_dst->x, hex->arrows[i].hex_dst->y,
                 colors[hex->arrows[i].arrow_color],
-                1
+                0
             );
         }
     }
     if (hex->label.text)
-        draw_text(this->widget, hex->x, hex->y, hex->label.text, 1);
+        draw_text(this->widget, hex->x, hex->y, hex->label.text, 0);
+    gtk_widget_queue_draw_area(this->widget,
+        x - 2 * MAP_HEX_UNIT, y - 2 * MAP_HEX_UNIT,
+        (x + 2 * MAP_HEX_UNIT) - (x - 2 * MAP_HEX_UNIT), (y + 2 * MAP_HEX_UNIT) - (y - 2 * MAP_HEX_UNIT)
+    );
 }
 
 void TMap_Reset_Map(TMap *this, color_name_t color)

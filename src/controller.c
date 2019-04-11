@@ -27,6 +27,7 @@
 #include "pathfinding/breadth_search.h"
 #include "pathfinding/depth_search.h"
 #include "pathfinding/connected_components.h"
+#include "pathfinding/dijkstra.h"
 
 static TController *singleton_instance = NULL;
 
@@ -79,6 +80,9 @@ void TController_On_MenuChange(TController *this, const char *label)
     }
     if (strcmp(label, "Connected components") == 0) {
         connected_components(this->model);
+    }
+    if (strcmp(label, "Dijkstra") == 0) {
+        dijkstra(this->model);
     }
     (void)*this;
 }

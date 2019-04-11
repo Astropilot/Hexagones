@@ -59,7 +59,7 @@ void depth_search_step(TGridModel *model, THex *x, THex *predecessor[][MAP_HEIGH
 
             predecessor[neighbor->x][neighbor->y] = x;
 
-            model->Add_Arrow(model, x, neighbor, BLUE);
+            model->Add_Arrow(model, x, neighbor, GRAY);
             depth_search_step(model, neighbor, predecessor, known);
         }
 

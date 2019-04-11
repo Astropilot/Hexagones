@@ -40,6 +40,7 @@ TGridModel *New_TGridModel(TController *observator)
     this->Change_Start = TGridModel_Change_Start;
     this->Change_Goal = TGridModel_Change_Goal;
     this->Random = TGridModel_Random;
+    this->Distance = TGridModel_Distance;
     this->Empty_Distance = TGridModel_Empty_Distance;
     this->Get_Neighbors = TGridModel_Get_Neighbors;
     this->Add_Arrow = TGridModel_Add_Arrow;
@@ -103,6 +104,20 @@ void TGridModel_Random(TGridModel *this)
     }
 }
 
+int TGridModel_Distance(TGridModel *this, THex *hex1, THex *hex2)
+{
+    int costs[] = {
+        [WHITE] = 1,
+        [BLUE] = 10,
+        [GREEN] = 5,
+        [YELLOW] = 2,
+        [RED] = 1,
+        [MAGENTA] = 1
+    };
+    (void)*this;
+    return ((costs[hex1->color] + costs[hex2->color]) / 2);
+}
+
 int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2)
 {
     (void)*this;
@@ -151,23 +166,41 @@ arrow_id_t TGridModel_Add_Arrow(TGridModel *this, THex *hex1, THex *hex2, color_
         uid = 0;
         uid2 = 3;
     }
-    if (hex1->x == hex2->x && hex1->y < hex2->y) {
+    else if (hex1->x == hex2->x && hex1->y < hex2->y) {
         uid = 3;
         uid2 = 0;
     }
-    if (hex1->y == hex2->y && hex1->x < hex2->x) {
+
+    else if (hex1->x < hex2->x && (hex1->x % 2 == 1) && hex1->y == hex2->y) {
         uid = 1;
         uid2 = 4;
     }
-    if (hex1->y == hex2->y && hex1->x > hex2->x) {
-        uid = 5;
-        uid2 = 2;
-    }
-    if (hex1->x < hex2->x && hex1->y < hex2->y) {
+    else if (hex1->x < hex2->x && (hex1->x % 2 == 1) && hex1->y < hex2->y) {
         uid = 2;
         uid2 = 5;
     }
-    if (hex1->x < hex2->x && hex1->y > hex2->y) {
+    else if (hex1->x < hex2->x && (hex1->x % 2 == 0) && hex1->y > hex2->y) {
+        uid = 1;
+        uid2 = 4;
+    }
+    else if (hex1->x < hex2->x && (hex1->x % 2 == 0) && hex1->y == hex2->y) {
+        uid = 2;
+        uid2 = 5;
+    }
+
+    else if (hex1->x > hex2->x && (hex1->x % 2 == 1) && hex1->y == hex2->y) {
+        uid = 5;
+        uid2 = 2;
+    }
+    else if (hex1->x > hex2->x && (hex1->x % 2 == 1) && hex1->y < hex2->y) {
+        uid = 4;
+        uid2 = 1;
+    }
+    else if (hex1->x > hex2->x && (hex1->x % 2 == 0) && hex1->y > hex2->y) {
+        uid = 5;
+        uid2 = 2;
+    }
+    else if (hex1->x > hex2->x && (hex1->x % 2 == 0) && hex1->y == hex2->y) {
         uid = 4;
         uid2 = 1;
     }
@@ -187,6 +220,7 @@ arrow_id_t TGridModel_Add_Arrow(TGridModel *this, THex *hex1, THex *hex2, color_
     hex2->arrows[uid2].uid_dst = uid2;
 
     this->observator->Update_Hex(this->observator, hex1);
+    this->observator->Update_Hex(this->observator, hex2);
     return (hex1->arrows[uid]);
 }
 
@@ -203,8 +237,8 @@ void TGridModel_Remove_Arrow(TGridModel *this, arrow_id_t arrow)
     hex_dst->arrows[arrow.uid_dst].hex_src = NULL;
     hex_dst->arrows[arrow.uid_dst].hex_dst = NULL;
 
-    this->observator->Update_Hex(this->observator, hex_dst);
     this->observator->Update_Hex(this->observator, hex_src);
+    this->observator->Update_Hex(this->observator, hex_dst);
 }
 
 text_id_t TGridModel_Add_Text(TGridModel *this, THex *hex, const char *text)
