@@ -28,6 +28,7 @@
 #include "pathfinding/depth_search.h"
 #include "pathfinding/connected_components.h"
 #include "pathfinding/dijkstra.h"
+#include "pathfinding/astar.h"
 
 static TController *singleton_instance = NULL;
 
@@ -83,6 +84,9 @@ void TController_On_MenuChange(TController *this, const char *label)
     }
     if (strcmp(label, "Dijkstra") == 0) {
         dijkstra(this->model);
+    }
+    if (strcmp(label, "A-star") == 0) {
+        astar(this->model);
     }
     (void)*this;
 }

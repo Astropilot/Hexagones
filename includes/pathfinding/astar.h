@@ -19,6 +19,8 @@
 #ifndef PATHFINDING_ASTAR_H_
 #define PATHFINDING_ASTAR_H_
 
+typedef struct TGridModel TGridModel;
 
+void astar(TGridModel *model);
 
 #endif

@@ -120,10 +120,21 @@ int TGridModel_Distance(TGridModel *this, THex *hex1, THex *hex2)
 
 int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2)
 {
+    int x1 = hex1->x;
+    int y1 = hex1->y - hex1->x / 2;
+    int z1 = -x1 - y1;
+    int x2 = hex2->x;
+    int y2 = hex2->y - hex2->x / 2;
+    int z2 = -x2 - y2;
+    int max = abs(x1 - x2);
+
+    if (max < abs(y1 - y2))
+        max = abs(y1 - y2);
+    if (max < abs(z1 - z2))
+        max = abs(z1 - z2);
+
     (void)*this;
-    (void)*hex1;
-    (void)*hex2;
-    return (0);
+    return (max);
 }
 
 THex **TGridModel_Get_Neighbors(TGridModel *this, THex *hex, unsigned int all)

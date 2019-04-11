@@ -230,7 +230,7 @@ static gboolean press_callback(GtkWidget *widget, GdkEventButton *event, gpointe
     if (!singleton_instance->surface) return (FALSE);
 
     if (event->button == GDK_BUTTON_PRIMARY) {
-        int i, j;
+        int i, j = -1;
 
         find_closest_hex(event->x, event->y, &i, &j);
         if (i != -1 && j != -1) {
@@ -250,7 +250,7 @@ static gboolean motion_callback(GtkWidget *widget, GdkEventMotion *event, gpoint
     if (!singleton_instance->surface) return (FALSE);
 
     if (event->state & GDK_BUTTON1_MASK) {
-        int i, j;
+        int i, j= -1;
 
         find_closest_hex(event->x, event->y, &i, &j);
         if (i != -1 && j != -1) {
