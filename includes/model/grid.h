@@ -35,9 +35,9 @@ typedef struct TGridModel {
 
     void(*Random)(struct TGridModel*);
 
-    int(*Distance)(struct TGridModel*, THex*, THex*);
+    double(*Distance)(struct TGridModel*, THex*, THex*);
 
-    int(*Empty_Distance)(struct TGridModel*, THex*, THex*);
+    double(*Empty_Distance)(struct TGridModel*, THex*, THex*);
 
     THex**(*Get_Neighbors)(struct TGridModel*, THex*, unsigned int);
 
@@ -71,9 +71,9 @@ void TGridModel_Change_Goal(TGridModel *this, int x, int y);
 
 void TGridModel_Random(TGridModel *this);
 
-int TGridModel_Distance(TGridModel *this, THex *hex1, THex *hex2);
+double TGridModel_Distance(TGridModel *this, THex *hex1, THex *hex2);
 
-int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2);
+double TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2);
 
 THex **TGridModel_Get_Neighbors(TGridModel *this, THex *hex, unsigned int all);
 

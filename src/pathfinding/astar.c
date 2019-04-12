@@ -22,14 +22,14 @@
 #include "utils.h"
 #include "struct/priority_queue.h"
 
-static int distance[MAP_WIDTHX][MAP_HEIGHTY];
+static double distance[MAP_WIDTHX][MAP_HEIGHTY];
 
 static int compare_node(void *n1, void *n2)
 {
     THex *node1 = (THex*)n1;
     THex *node2 = (THex*)n2;
-    int distance_node1 = distance[node1->x][node1->y];
-    int distance_node2 = distance[node2->x][node2->y];
+    double distance_node1 = distance[node1->x][node1->y];
+    double distance_node2 = distance[node2->x][node2->y];
 
     if (distance_node1 < distance_node2)
         return (1);
@@ -42,7 +42,7 @@ void astar(TGridModel *model)
 {
     int i, j;
     THex *predecessor[MAP_WIDTHX][MAP_HEIGHTY];
-    int heuristic[MAP_WIDTHX][MAP_HEIGHTY];
+    double heuristic[MAP_WIDTHX][MAP_HEIGHTY];
     priority_queue_t *waiting = create_priority_queue(compare_node);
     arrow_id_t arrows[MAP_WIDTHX][MAP_HEIGHTY];
     text_id_t texts[MAP_WIDTHX][MAP_HEIGHTY];
@@ -70,10 +70,10 @@ void astar(TGridModel *model)
         THex *neighbor = neighbors[count_max];
 
         while (neighbor) {
-            int current_dist = distance[current->x][current->y];
-            int current_h = heuristic[current->x][current->y];
-            int neighbor_dist = distance[neighbor->x][neighbor->y];
-            int neighbor_h = heuristic[neighbor->x][neighbor->y];
+            double current_dist = distance[current->x][current->y];
+            double current_h = heuristic[current->x][current->y];
+            double neighbor_dist = distance[neighbor->x][neighbor->y];
+            double neighbor_h = heuristic[neighbor->x][neighbor->y];
 
             model->observator->Update_Screen(model->observator);
             if ( (current_dist != -1) &&
@@ -95,7 +95,7 @@ void astar(TGridModel *model)
                 arrows[neighbor->x][neighbor->y] = model->Add_Arrow(model, current, neighbor, GRAY);
                 if (texts[neighbor->x][neighbor->y].text)
                     model->Remove_Text(model, texts[neighbor->x][neighbor->y]);
-                sprintf(str_distance, "%d", distance[neighbor->x][neighbor->y]);
+                sprintf(str_distance, "%d", (int)distance[neighbor->x][neighbor->y]);
                 texts[neighbor->x][neighbor->y] = model->Add_Text(model, neighbor, str_distance);
             }
             count_max++;

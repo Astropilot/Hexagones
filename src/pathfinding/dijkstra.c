@@ -22,14 +22,14 @@
 #include "utils.h"
 #include "struct/priority_queue.h"
 
-static int distance[MAP_WIDTHX][MAP_HEIGHTY];
+static double distance[MAP_WIDTHX][MAP_HEIGHTY];
 
 static int compare_node(void *n1, void *n2)
 {
     THex *node1 = (THex*)n1;
     THex *node2 = (THex*)n2;
-    int distance_node1 = distance[node1->x][node1->y];
-    int distance_node2 = distance[node2->x][node2->y];
+    double distance_node1 = distance[node1->x][node1->y];
+    double distance_node2 = distance[node2->x][node2->y];
 
     if (distance_node1 < distance_node2)
         return (1);
@@ -89,7 +89,7 @@ void dijkstra(TGridModel *model)
                 arrows[neighbor->x][neighbor->y] = model->Add_Arrow(model, current, neighbor, GRAY);
                 if (texts[neighbor->x][neighbor->y].text)
                     model->Remove_Text(model, texts[neighbor->x][neighbor->y]);
-                sprintf(str_distance, "%d", distance[neighbor->x][neighbor->y]);
+                sprintf(str_distance, "%d", (int)distance[neighbor->x][neighbor->y]);
                 texts[neighbor->x][neighbor->y] = model->Add_Text(model, neighbor, str_distance);
             }
             count_max++;

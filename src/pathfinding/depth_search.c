@@ -21,13 +21,13 @@
 #include "controller.h"
 #include "struct/queue.h"
 
-void depth_search_step(TGridModel *model, THex *x, THex *predecessor[][MAP_HEIGHTY], int known[][MAP_HEIGHTY]);
+void depth_search_step(TGridModel *model, THex *x, THex *predecessor[][MAP_HEIGHTY], unsigned int known[][MAP_HEIGHTY]);
 
 void depth_search(TGridModel *model)
 {
     int i, j;
     THex *predecessor[MAP_WIDTHX][MAP_HEIGHTY];
-    int known[MAP_WIDTHX][MAP_HEIGHTY];
+    unsigned int known[MAP_WIDTHX][MAP_HEIGHTY];
 
     for (i = 0; i < MAP_WIDTHX; i++) {
         for (j = 0; j < MAP_HEIGHTY; j++) {
@@ -48,7 +48,7 @@ void depth_search(TGridModel *model)
     (void)colors;
 }
 
-void depth_search_step(TGridModel *model, THex *x, THex *predecessor[][MAP_HEIGHTY], int known[][MAP_HEIGHTY])
+void depth_search_step(TGridModel *model, THex *x, THex *predecessor[][MAP_HEIGHTY], unsigned int known[][MAP_HEIGHTY])
 {
     THex **neighbors = model->Get_Neighbors(model, x, 0);
     int count_max = 0;

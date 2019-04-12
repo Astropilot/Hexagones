@@ -27,7 +27,7 @@ void breadth_search(TGridModel *model)
     THex *start = model->start;
 
     THex *predecessor[MAP_WIDTHX][MAP_HEIGHTY];
-    int distance[MAP_WIDTHX][MAP_HEIGHTY];
+    double distance[MAP_WIDTHX][MAP_HEIGHTY];
 
     for (i = 0; i < MAP_WIDTHX; i++) {
         for (j = 0; j < MAP_HEIGHTY; j++) {
@@ -57,7 +57,7 @@ void breadth_search(TGridModel *model)
                 predecessor[neighbor->x][neighbor->y] = current;
 
                 model->Add_Arrow(model, current, neighbor, GRAY);
-                sprintf(str_distance, "%d", distance[neighbor->x][neighbor->y]);
+                sprintf(str_distance, "%d", (int)distance[neighbor->x][neighbor->y]);
                 model->Add_Text(model, neighbor, str_distance);
             }
             count_max++;

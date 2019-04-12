@@ -105,34 +105,34 @@ void TGridModel_Random(TGridModel *this)
     }
 }
 
-int TGridModel_Distance(TGridModel *this, THex *hex1, THex *hex2)
+double TGridModel_Distance(TGridModel *this, THex *hex1, THex *hex2)
 {
-    int costs[] = {
-        [WHITE] = 1,
-        [BLUE] = 10,
-        [GREEN] = 5,
-        [YELLOW] = 2,
-        [RED] = 1,
-        [MAGENTA] = 1
+    double costs[] = {
+        [WHITE] = 1.0,
+        [BLUE] = 10.0,
+        [GREEN] = 5.0,
+        [YELLOW] = 2.0,
+        [RED] = 1.0,
+        [MAGENTA] = 1.0
     };
     (void)*this;
-    return ((costs[hex1->color] + costs[hex2->color]) / 2);
+    return ((costs[hex1->color] + costs[hex2->color]) / 2.0f);
 }
 
-int TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2)
+double TGridModel_Empty_Distance(TGridModel *this, THex *hex1, THex *hex2)
 {
-    int x1 = hex1->x;
-    int y1 = hex1->y - hex1->x / 2;
-    int z1 = -x1 - y1;
-    int x2 = hex2->x;
-    int y2 = hex2->y - hex2->x / 2;
-    int z2 = -x2 - y2;
-    int max = abs(x1 - x2);
+    double x1 = (double)hex1->x;
+    double y1 = hex1->y - hex1->x / 2.0f;
+    double z1 = -x1 - y1;
+    double x2 = (double)hex2->x;
+    double y2 = hex2->y - hex2->x / 2.0f;
+    double z2 = -x2 - y2;
+    double max = (double)abs(x1 - x2);
 
     if (max < abs(y1 - y2))
-        max = abs(y1 - y2);
+        max = (double)abs(y1 - y2);
     if (max < abs(z1 - z2))
-        max = abs(z1 - z2);
+        max = (double)abs(z1 - z2);
 
     (void)*this;
     return (max);

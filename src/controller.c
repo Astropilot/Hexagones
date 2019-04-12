@@ -27,6 +27,7 @@
 #include "pathfinding/breadth_search.h"
 #include "pathfinding/depth_search.h"
 #include "pathfinding/connected_components.h"
+#include "pathfinding/bellman_ford.h"
 #include "pathfinding/dijkstra.h"
 #include "pathfinding/astar.h"
 
@@ -85,6 +86,10 @@ void TController_On_MenuChange(TController *this, const char *label)
     if (strcmp(label, "Connected components") == 0) {
         this->model->Reset_Results(this->model);
         connected_components(this->model);
+    }
+    if (strcmp(label, "Bellman-Ford") == 0) {
+        this->model->Reset_Results(this->model);
+        bellman_ford(this->model);
     }
     if (strcmp(label, "Dijkstra") == 0) {
         this->model->Reset_Results(this->model);
