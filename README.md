@@ -1,7 +1,7 @@
 <h1><img src="https://www.codexus.fr/img/hexagones/logo_hexagones.png" height="96" alt="Hexagones Logo" /></h1>
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/Astropilot/Hexagones/blob/master/LICENSE)
-[![Version](https://img.shields.io/github/release/Astropilot/Hexagones.svg?label=version)](https://github.com/Snaipe/Hexagones/releases/latest)
+[![Version](https://img.shields.io/github/release/Astropilot/Hexagones.svg)](https://github.com/Astropilot/Hexagones/releases/latest)
 ![Made with love](https://img.shields.io/badge/Made%20with-%E2%9D%A4%EF%B8%8F-yellow.svg)
 
 Rewriting in C of a pedagogical program allowing to understand the functioning of path-finding algorithms in graphs.
