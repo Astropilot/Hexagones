@@ -57,6 +57,8 @@ void breadth_search(TGridModel *model)
                 model->Add_Arrow(model, current, neighbor, GRAY);
                 sprintf(str_distance, "%d", distance[neighbor->x][neighbor->y]);
                 model->Add_Text(model, neighbor, str_distance);
+                while (gtk_events_pending())
+                    gtk_main_iteration();
             }
             count_max++;
             if (count_max < 6)
@@ -72,6 +74,8 @@ void breadth_search(TGridModel *model)
     while (predecessor[current->x][current->y]) {
         model->Add_Arrow(model, predecessor[current->x][current->y], current, RED);
         current = predecessor[current->x][current->y];
+        while (gtk_events_pending())
+            gtk_main_iteration();
     }
     (void)colors;
     free_queue(waiting);

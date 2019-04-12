@@ -42,6 +42,8 @@ void depth_search(TGridModel *model)
     while (predecessor[current->x][current->y]) {
         model->Add_Arrow(model, predecessor[current->x][current->y], current, RED);
         current = predecessor[current->x][current->y];
+        while (gtk_events_pending())
+            gtk_main_iteration();
     }
     (void)colors;
 }
@@ -54,7 +56,8 @@ void depth_search_step(TGridModel *model, THex *x, THex *predecessor[][MAP_HEIGH
 
     known[x->x][x->y] = 1;
     while (neighbor) {
-
+        while (gtk_events_pending())
+            gtk_main_iteration();
         if (known[neighbor->x][neighbor->y] == 0) {
 
             predecessor[neighbor->x][neighbor->y] = x;
