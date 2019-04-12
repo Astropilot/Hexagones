@@ -23,11 +23,11 @@ static TPalette *singleton_instance = NULL;
 static gboolean callback_palettechoice(GtkWidget *button, gpointer user_data);
 
 static char *hex_types[] = {
-    "Black",
-    "White",
-    "Blue",
-    "Green",
-    "Yellow",
+    "Wall",
+    "Nothing",
+    "Water",
+    "Grass",
+    "Sand",
     "Start",
     "Goal",
     NULL

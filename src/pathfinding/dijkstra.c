@@ -18,6 +18,7 @@
 #include "pathfinding/dijkstra.h"
 #include "model/grid.h"
 #include "model/hex.h"
+#include "controller.h"
 #include "utils.h"
 #include "struct/priority_queue.h"
 
@@ -67,8 +68,7 @@ void dijkstra(TGridModel *model)
         THex *neighbor = neighbors[count_max];
 
         while (neighbor) {
-            while (gtk_events_pending())
-                gtk_main_iteration();
+            model->observator->Update_Screen(model->observator);
 
             if ( (distance[current->x][current->y] != -1) &&
                  (  distance[neighbor->x][neighbor->y] == -1 ||
@@ -107,8 +107,7 @@ void dijkstra(TGridModel *model)
         if (predecessor[current->x][current->y])
             model->Add_Arrow(model, predecessor[current->x][current->y], current, RED);
         current = predecessor[current->x][current->y];
-        while (gtk_events_pending())
-            gtk_main_iteration();
+        model->observator->Update_Screen(model->observator);
     }
 
     free_priority_queue(waiting);

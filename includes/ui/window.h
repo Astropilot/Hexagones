@@ -32,6 +32,8 @@ typedef struct TMainWindow {
 
     void(*Free)(struct TMainWindow*);       /*!< Free (ressources) method. */
 
+    void(*Update_Screen)(struct TMainWindow*);
+
     GtkApplication *app;
     GtkWidget *window;
     TPalette *palette;
@@ -45,6 +47,8 @@ typedef struct TMainWindow {
 TMainWindow* New_TMainWindow(void);
 
 int TMainWindow_Start_View(TMainWindow *this);
+
+void TMainWindow_Update_Screen(TMainWindow *this);
 
 void TMainWindow_New_Free(TMainWindow *this);
 

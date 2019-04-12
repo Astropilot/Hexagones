@@ -93,6 +93,7 @@ void TGridModel_Random(TGridModel *this)
     int x, y;
     color_name_t colours[] = {WHITE, BLUE, GREEN, YELLOW, BLACK};
 
+    this->Reset_Results(this);
     for (x = 0; x < MAP_WIDTHX; x++) {
         for (y = 0; y < MAP_HEIGHTY; y++) {
             if (this->hexs[x][y] != this->start && this->hexs[x][y] != this->goal) {

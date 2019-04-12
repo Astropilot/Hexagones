@@ -56,6 +56,7 @@ TMainWindow* New_TMainWindow(void)
     if(!this) return (NULL);
 
     this->Start_View = TMainWindow_Start_View;
+    this->Update_Screen = TMainWindow_Update_Screen;
     this->Free = TMainWindow_New_Free;
     this->palette = New_TPalette();
     this->map = New_TMap();
@@ -74,6 +75,13 @@ int TMainWindow_Start_View(TMainWindow *this)
     g_object_unref(this->app);
 
     return (status);
+}
+
+void TMainWindow_Update_Screen(TMainWindow *this)
+{
+    while (gtk_events_pending())
+        gtk_main_iteration();
+    (void)*this;
 }
 
 static void activate(GtkApplication* app, gpointer user_data)

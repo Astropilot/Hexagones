@@ -69,7 +69,7 @@ unsigned int push_priority_queue(priority_queue_t *pqueue, void *data);
  * @brief Function to re-sort an element whose priority has changed.
  *
  * @param pqueue The priority queue.
- * @param data The element to add.
+ * @param data The element to re-sort.
  * @return Returns 1 if the element has been sorted, 0 if not.
  */
 unsigned int decrease_priority_queue(priority_queue_t *pqueue, void *data);

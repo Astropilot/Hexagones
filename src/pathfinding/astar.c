@@ -18,8 +18,8 @@
 #include "pathfinding/astar.h"
 #include "model/grid.h"
 #include "model/hex.h"
+#include "controller.h"
 #include "utils.h"
-#include "struct/queue.h"
 #include "struct/priority_queue.h"
 
 static int distance[MAP_WIDTHX][MAP_HEIGHTY];
@@ -50,7 +50,6 @@ void astar(TGridModel *model)
     for (i = 0; i < MAP_WIDTHX; i++) {
         for (j = 0; j < MAP_HEIGHTY; j++) {
             heuristic[i][j] = model->Empty_Distance(model, model->hexs[i][j], model->goal);
-            printf("[A*] (%d, %d) h = %d\n", i, j, heuristic[i][j]);
             predecessor[i][j] = NULL;
             distance[i][j] = -1;
             arrows[i][j].is_arrow = 0;
@@ -75,6 +74,8 @@ void astar(TGridModel *model)
             int current_h = heuristic[current->x][current->y];
             int neighbor_dist = distance[neighbor->x][neighbor->y];
             int neighbor_h = heuristic[neighbor->x][neighbor->y];
+
+            model->observator->Update_Screen(model->observator);
             if ( (current_dist != -1) &&
                  (  neighbor_dist == -1 ||
                     current_dist + model->Distance(model, current, neighbor) - current_h + neighbor_h < neighbor_dist
@@ -83,8 +84,6 @@ void astar(TGridModel *model)
                 char str_distance[12];
 
                 distance[neighbor->x][neighbor->y] = current_dist + model->Distance(model, current, neighbor) - current_h + neighbor_h;
-                printf("[A*] Neighbor (%d, %d) dist = %d\n", neighbor->x, neighbor->y, distance[neighbor->x][neighbor->y]);
-                printf("[A*] queue size: %d\n", waiting->size);
                 if (!is_present_in_priority_queue(waiting, neighbor))
                     push_priority_queue(waiting, neighbor);
                 else
@@ -114,6 +113,7 @@ void astar(TGridModel *model)
         if (predecessor[current->x][current->y])
             model->Add_Arrow(model, predecessor[current->x][current->y], current, RED);
         current = predecessor[current->x][current->y];
+        model->observator->Update_Screen(model->observator);
     }
 
     free_priority_queue(waiting);

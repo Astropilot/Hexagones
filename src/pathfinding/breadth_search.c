@@ -18,6 +18,7 @@
 #include "pathfinding/breadth_search.h"
 #include "model/grid.h"
 #include "model/hex.h"
+#include "controller.h"
 #include "struct/queue.h"
 
 void breadth_search(TGridModel *model)
@@ -46,6 +47,7 @@ void breadth_search(TGridModel *model)
         THex *neighbor = neighbors[count_max];
 
         while (neighbor) {
+            model->observator->Update_Screen(model->observator);
 
             if (distance[neighbor->x][neighbor->y] == 99999999) {
                 char str_distance[12];
@@ -57,8 +59,6 @@ void breadth_search(TGridModel *model)
                 model->Add_Arrow(model, current, neighbor, GRAY);
                 sprintf(str_distance, "%d", distance[neighbor->x][neighbor->y]);
                 model->Add_Text(model, neighbor, str_distance);
-                while (gtk_events_pending())
-                    gtk_main_iteration();
             }
             count_max++;
             if (count_max < 6)
@@ -74,8 +74,7 @@ void breadth_search(TGridModel *model)
     while (predecessor[current->x][current->y]) {
         model->Add_Arrow(model, predecessor[current->x][current->y], current, RED);
         current = predecessor[current->x][current->y];
-        while (gtk_events_pending())
-            gtk_main_iteration();
+        model->observator->Update_Screen(model->observator);
     }
     (void)colors;
     free_queue(waiting);

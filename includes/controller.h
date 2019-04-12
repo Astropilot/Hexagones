@@ -37,6 +37,8 @@ typedef struct TController {
 
     void(*Update_Hex)(struct TController*, THex*);
 
+    void(*Update_Screen)(struct TController*);
+
     void(*Free)(struct TController*);       /*!< Free (ressources) method. */
 
     TMainWindow *view;
@@ -55,6 +57,8 @@ void TController_On_PaletteChange(TController *this, const char *label);
 void TController_On_LeftClick(TController *this, int x, int y);
 
 void TController_Update_Hex(TController *this, THex *hex);
+
+void TController_Update_Screen(TController *this);
 
 void TController_New_Free(TController *this);
 
