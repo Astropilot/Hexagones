@@ -19,7 +19,7 @@
 #include "controller.h"
 #include "model/grid.h"
 #include "model/hex.h"
-#include "ui/color.h"
+#include "ui/color/color.h"
 #include "utils.h"
 
 static TGridModel *singleton_instance = NULL;
@@ -71,7 +71,6 @@ static void TGridModel_Init(TGridModel *this)
     this->start->Change_Color(this->start, MAGENTA, 1);
     this->goal = this->hexs[MAP_WIDTHX-1][0];
     this->goal->Change_Color(this->goal, RED, 1);
-    (void)colors;
 }
 
 void TGridModel_Change_Start(TGridModel *this, int x, int y)
@@ -311,7 +310,7 @@ void TGridModel_New_Free(TGridModel *this)
         int x, y;
         for (x = 0; x < MAP_WIDTHX; x++) {
             for (y = 0; y < MAP_HEIGHTY; y++) {
-                free(this->hexs[x][y]);
+                this->hexs[x][y]->Free(this->hexs[x][y]);
             }
             free(this->hexs[x]);
         }

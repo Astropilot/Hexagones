@@ -21,6 +21,11 @@
 
 typedef struct TGridModel TGridModel;
 
+/**
+ * @brief Function that triggers the Depth-first search algorithm from the model.
+ *
+ * @param model A pointer to the model instance.
+ */
 void depth_search(TGridModel *model);
 
 #endif

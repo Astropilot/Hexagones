@@ -82,7 +82,6 @@ void bellman_ford(TGridModel *model)
         current = predecessor[current->x][current->y];
         model->observator->Update_Screen(model->observator);
     }
-    (void)colors;
 }
 
 unsigned int relax_edge(TGridModel *model, double distance[][MAP_HEIGHTY],

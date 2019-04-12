@@ -22,7 +22,7 @@
 #include "model/hex.h"
 #include "ui/window.h"
 #include "ui/map.h"
-#include "ui/color.h"
+#include "ui/color/color.h"
 
 #include "pathfinding/breadth_search.h"
 #include "pathfinding/depth_search.h"
@@ -58,8 +58,6 @@ TController* New_TController(void)
 void TController_On_MenuChange(TController *this, const char *label)
 {
     if (!this || !label) return;
-
-    printf("[Controller] Menu item selected: %s\n", label);
 
     if (strcmp(label, "All white") == 0) {
         this->view->map->Reset_Map(this->view->map, WHITE);
@@ -106,7 +104,6 @@ void TController_On_PaletteChange(TController *this, const char *label)
 {
     if (!this || !label) return;
 
-    printf("[Controller] Palette item selected: %s\n", label);
     if (this->hex_choice) free(this->hex_choice);
     this->hex_choice = strdup(label);
 }
@@ -140,7 +137,6 @@ void TController_On_LeftClick(TController *this, int x, int y)
 
 void TController_Update_Hex(TController *this, THex *hex)
 {
-    (void)colors;
     this->view->map->Update_Hex(this->view->map, hex);
 }
 

@@ -26,7 +26,7 @@
 #define MAP_HEIGHTY 20          /*!< The map height.*/
 #define MAP_HEX_UNIT 8          /*!< The unit of a hexagone.*/
 
-#define MAP_HEIGHT (4*MAP_HEX_UNIT+1)*(MAP_HEIGHTY+0.5)
-#define MAP_WIDTH  (3*MAP_HEX_UNIT+1)*(MAP_WIDTHX+0.5)
+#define MAP_HEIGHT (4*MAP_HEX_UNIT+1)*(MAP_HEIGHTY+0.5)     /*!< The map height in pixels. */
+#define MAP_WIDTH  (3*MAP_HEX_UNIT+1)*(MAP_WIDTHX+0.5)      /*!< The map width in pixels. */
 
 #endif

@@ -12,13 +12,12 @@
 *******************************************************************************/
 
 #include <gtk/gtk.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
 #include "main.h"
 #include "ui/map.h"
-#include "ui/color.h"
+#include "ui/color/color_names.h"
 #include "model/grid.h"
 #include "model/hex.h"
 #include "controller.h"

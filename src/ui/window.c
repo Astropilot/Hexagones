@@ -180,7 +180,6 @@ static gboolean callback_menuitem(GtkMenuItem *item, gpointer user_data)
         );
     }
     (void)user_data;
-    (void)colors;
     return (FALSE);
 }
 

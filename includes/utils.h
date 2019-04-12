@@ -18,33 +18,41 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
-#define M_PI 3.14159265358979323846
+#define M_PI 3.14159265358979323846 /*!< The actual value of PI. */
 
-#include "ui/color.h"
+#include "ui/color/color.h"
 
 typedef struct THex THex;
 
+/**
+ * @brief A structure representing a pair of integers.
+ */
 typedef struct int_pair_t {
-    int p1;
-    int p2;
+    int p1;     /*!< The first integer. */
+    int p2;     /*!< The second integer. */
 } int_pair_t ;
 
+/**
+ * @brief A structure representing a unique ID for tile arrows.
+ */
 typedef struct arrow_id_t {
-    unsigned int is_arrow;
-    THex *hex_src;
-    THex *hex_dst;
-    color_name_t arrow_color;
-    unsigned int uid_src;
-    unsigned int uid_dst;
+    unsigned int is_arrow;      /*!< A boolean to know if arrow is present. */
+    THex *hex_src;              /*!< The tile where the arrow start. */
+    THex *hex_dst;              /*!< The tile where the arrow end. */
+    color_name_t arrow_color;   /*!< The color name of the arrow. */
+    unsigned int uid_src;       /*!< A internal ID for the tile source side. */
+    unsigned int uid_dst;       /*!< A internal ID for the tile destination side. */
 } arrow_id_t;
 
+/**
+ * @brief A structure representing a unique ID for tile labels.
+ */
 typedef struct text_id_t {
-    char *text;
-    THex *hex;
+    char *text;     /*!< The text in the label (can be NULL, no label). */
+    THex *hex;      /*!< The tile concerned. */
 } text_id_t;
 
 /**
- * @fn int rand_range_int(int min, int max)
  * @brief Return a random integer between a min and a max given.
  *
  * @param min The minimum value.

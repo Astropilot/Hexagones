@@ -21,6 +21,11 @@
 
 typedef struct TGridModel TGridModel;
 
+/**
+ * @brief Function that triggers the A* algorithm from the model.
+ *
+ * @param model A pointer to the model instance.
+ */
 void astar(TGridModel *model);
 
 #endif

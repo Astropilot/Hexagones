@@ -17,7 +17,7 @@
 #include "model/hex.h"
 #include "controller.h"
 #include "utils.h"
-#include "ui/color.h"
+#include "ui/color/color.h"
 
 THex *New_THex(int x, int y, TController *observator)
 {
@@ -46,7 +46,6 @@ void THex_Change_Color(THex *this, color_name_t color, unsigned int notify)
     this->color = color;
     if (notify)
         this->observator->Update_Hex(this->observator, this);
-    (void)colors;
 }
 
 void THex_New_Free(THex *this)

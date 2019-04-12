@@ -21,6 +21,11 @@
 
 typedef struct TGridModel TGridModel;
 
+/**
+ * @brief Function that triggers the Bellman-Ford algorithm from the model.
+ *
+ * @param model A pointer to the model instance.
+ */
 void bellman_ford(TGridModel *model);
 
 #endif

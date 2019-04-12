@@ -36,6 +36,5 @@ int main(void)
     if (controller)
         controller->Free(controller);
 
-    (void)colors;
     return (status);
 }

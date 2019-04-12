@@ -76,6 +76,5 @@ void breadth_search(TGridModel *model)
         current = predecessor[current->x][current->y];
         model->observator->Update_Screen(model->observator);
     }
-    (void)colors;
     free_queue(waiting);
 }

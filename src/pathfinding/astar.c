@@ -117,5 +117,4 @@ void astar(TGridModel *model)
     }
 
     free_priority_queue(waiting);
-    (void)colors;
 }

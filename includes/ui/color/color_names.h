@@ -12,30 +12,14 @@
 *******************************************************************************/
 
 /**
- * @file color.h
- * @brief Colors utils.
+ * @file ui/color/color_names.h
+ * @brief Some predefined colors.
  */
 
-#ifndef UI_COLOR_H_
-#define UI_COLOR_H_
+#ifndef UI_COLOR_NAME_H_
+#define UI_COLOR_NAME_H_
 
-typedef enum color_name_t {
-    WHITE,
-    BLACK,
-    BLUE,
-    RED,
-    GREEN,
-    YELLOW,
-    MAGENTA,
-    GRAY
-} color_name_t ;
-
-typedef struct rgba_color_t {
-    double r;
-    double g;
-    double b;
-    double a;
-} rgba_color_t ;
+#include "ui/color/color.h"
 
 static rgba_color_t colors[] = {
     [WHITE] = {1.0, 1.0, 1.0, 1.0},
@@ -46,6 +30,6 @@ static rgba_color_t colors[] = {
     [YELLOW] = {1.0, 1.0, 0.0, 1.0},
     [MAGENTA] = {1.0, 0.0, 1.0, 1.0},
     [GRAY] = {0.5, 0.5, 0.5, 0.5}
-};
+};  /*!< A list of predefined colors. */
 
 #endif

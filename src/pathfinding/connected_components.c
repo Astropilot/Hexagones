@@ -40,8 +40,6 @@ void connected_components(TGridModel *model)
             }
         }
     }
-
-    (void)colors;
 }
 
 void connected_components_step(TGridModel *model, THex *x, int component[][MAP_HEIGHTY], int n)

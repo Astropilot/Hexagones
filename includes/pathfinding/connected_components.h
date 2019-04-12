@@ -21,6 +21,11 @@
 
 typedef struct TGridModel TGridModel;
 
+/**
+ * @brief Function that triggers the connected components count algorithm from the model.
+ *
+ * @param model A pointer to the model instance.
+ */
 void connected_components(TGridModel *model);
 
 #endif

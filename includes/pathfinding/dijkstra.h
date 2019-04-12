@@ -21,6 +21,11 @@
 
 typedef struct TGridModel TGridModel;
 
+/**
+ * @brief Function that triggers the Dijkstra algorithm from the model.
+ *
+ * @param model A pointer to the model instance.
+ */
 void dijkstra(TGridModel *model);
 
 #endif

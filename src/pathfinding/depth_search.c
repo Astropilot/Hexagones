@@ -45,7 +45,6 @@ void depth_search(TGridModel *model)
         current = predecessor[current->x][current->y];
         model->observator->Update_Screen(model->observator);
     }
-    (void)colors;
 }
 
 void depth_search_step(TGridModel *model, THex *x, THex *predecessor[][MAP_HEIGHTY], unsigned int known[][MAP_HEIGHTY])

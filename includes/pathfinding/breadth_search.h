@@ -21,6 +21,11 @@
 
 typedef struct TGridModel TGridModel;
 
+/**
+ * @brief Function that triggers the Breadth-first search algorithm from the model.
+ *
+ * @param model A pointer to the model instance.
+ */
 void breadth_search(TGridModel *model);
 
 #endif
